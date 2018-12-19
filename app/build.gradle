@@ -30,6 +30,7 @@ dependencies {
     def lifecycle_version = "1.1.1"
     def coroutines_version = "1.0.1"
     def glide_version = "4.8.0"
+    def okhttp3_version = "3.12.0"
 
     //Floating Action Button用
     implementation "com.android.support:design:$design_version"
@@ -48,6 +49,9 @@ dependencies {
 
     implementation "com.github.bumptech.glide:glide:$glide_version"
     annotationProcessor "com.github.bumptech.glide:compiler:$glide_version"
+
+    implementation "com.squareup.okhttp3:okhttp:$okhttp3_version"
+    testImplementation "com.squareup.okhttp3:mockwebserver:$okhttp3_version"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
