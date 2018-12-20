@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/update_toolbar_menu_item"
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/search_toolbar_menu_item"
+          android:icon="@drawable/ic_round_search"
+          android:title="@string/search"
+          app:actionViewClass="android.support.v7.widget.SearchView"
+          app:showAsAction="ifRoom|collapseActionView" />
 
-          android:title="更新" />
+    <item android:id="@+id/sync_toolbar_menu_item"
+          android:icon="@drawable/ic_round_sync"
+          android:title="@string/sync"
+          app:showAsAction="ifRoom|collapseActionView" />
 </menu>
