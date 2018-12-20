@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CookingRecords</string>
+    <string name="app_name">料理記録アルバム</string>
     <string name="all_records">すべての記録</string>
     <string name="main_dish">主菜</string>
     <string name="side_dish">副菜</string>

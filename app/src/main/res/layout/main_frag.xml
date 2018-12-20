@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
-</android.support.constraint.ConstraintLayout>
+<layout>
+    <data>
+        <variable name="viewmodel" type="work.kcs_labo.oisiikenkotask.main.MainViewModel" />
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <GridView
+                android:id="@+id/record_list"
+                android:numColumns="2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+        />
+
+    </android.support.constraint.ConstraintLayout>
+</layout>
+
+
