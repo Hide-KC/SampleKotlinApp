@@ -13,6 +13,7 @@
         <GridView
                 android:id="@+id/record_list"
                 android:numColumns="2"
+                android:record_list="@{viewmodel.records}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
         />

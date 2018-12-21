@@ -9,5 +9,6 @@
 
     <string name="drawer_open">open</string>
     <string name="drawer_close">close</string>
+    <string name="empty_text">まだ料理記録はありません</string>
 
 </resources>

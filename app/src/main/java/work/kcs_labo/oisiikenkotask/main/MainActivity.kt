@@ -6,7 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.main_act.*
 import work.kcs_labo.oisiikenkotask.R
-import work.kcs_labo.oisiikenkotask.obtainViewModel
+import work.kcs_labo.oisiikenkotask.util.obtainViewModel
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,8 +17,10 @@ class MainActivity : AppCompatActivity() {
         obtainViewModel()
         setSupportActionBar(toolbar)
 
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.add(R.id.contentView, MainFragment.newInstance()).commit()
+        if (savedInstanceState == null){
+            val transaction = supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.contentView, MainFragment.newInstance()).commit()
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

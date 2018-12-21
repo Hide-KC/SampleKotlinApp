@@ -1,4 +1,4 @@
-package work.kcs_labo.oisiikenkotask
+package work.kcs_labo.oisiikenkotask.util
 
 import android.databinding.BindingAdapter
 import android.widget.GridView
@@ -10,31 +10,31 @@ import work.kcs_labo.oisiikenkotask.list.RecordAdapter
 
 //拡張関数でImageViewを拡張
 //BindingAdapterアノテーションでxmlに要素を追加できる
-@BindingAdapter("android:imageUrl")
+@BindingAdapter("android:image_url")
 fun ImageView.setImageUrl(url: String) {
     Glide.with(context).load(url).into(this)
 }
 
 //ListViewを拡張
 @BindingAdapter("android:record_list")
-fun ListView.setCookingRecords(cookingRecords: List<CookingRecord>) {
+fun ListView.setCookingRecords(records: List<CookingRecord>?) {
     when {
-        adapter != null -> return
+        adapter != null || records == null -> return
         else -> {
             adapter = RecordAdapter(context).also {
-                it.addAll(cookingRecords)
+                it.addAll(records)
             }
         }
     }
 }
 
 @BindingAdapter("android:record_list")
-fun GridView.setCookingRecords(cookingRecords: List<CookingRecord>) {
+fun GridView.setCookingRecords(records: List<CookingRecord>?) {
     when {
-        adapter != null -> return
+        adapter != null || records == null -> return
         else -> {
             adapter = RecordAdapter(context).also {
-                it.addAll(cookingRecords)
+                it.addAll(records)
             }
         }
     }

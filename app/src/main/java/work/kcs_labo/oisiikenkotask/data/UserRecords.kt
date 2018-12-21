@@ -12,7 +12,7 @@ class UserRecords(parentJSON: JSONObject) {
         val tempRecords = mutableListOf<CookingRecord>()
         val recordsJSONArray = parentJSON.getJSONArray(COOKING_RECORDS)
         if (recordsJSONArray.length() > 0) {
-            for (i in 0..recordsJSONArray.length()) {
+            for (i in 0 until recordsJSONArray.length()) {
                 val tempRecord = CookingRecord(recordsJSONArray[i] as JSONObject)
                 tempRecords.add(tempRecord)
             }
