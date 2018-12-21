@@ -15,7 +15,14 @@ interface AlbumDataSource {
         fun onDataNotAvailable()
     }
 
+    interface LoadAdditionalRecordCallback {
+        fun onAdditionalRecordLoaded(userRecords: UserRecords)
+        fun onDataNotAvailable()
+    }
+
     fun getCookingRecords(offset: Int, limit: Int, callback: LoadRecordsCallback)
 
     fun getCookingRecord(offset: Int, limit: Int, recordId: Int, callback: GetRecordCallback)
+
+    fun getAdditionalRecords(offset: Int, limit: Int, callback: LoadAdditionalRecordCallback)
 }

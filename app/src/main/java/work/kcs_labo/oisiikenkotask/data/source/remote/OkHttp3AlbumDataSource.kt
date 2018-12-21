@@ -5,7 +5,6 @@ import okhttp3.*
 import org.json.JSONException
 import org.json.JSONObject
 import work.kcs_labo.oisiikenkotask.data.UserRecords
-import work.kcs_labo.oisiikenkotask.data.Pagination
 import work.kcs_labo.oisiikenkotask.data.source.AlbumDataSource
 import java.io.IOException
 
@@ -20,8 +19,7 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
 
     override fun getCookingRecords(offset: Int, limit: Int, callback: AlbumDataSource.LoadRecordsCallback) {
         launch {
-            val deferred = coroutineScope { async { getContent(offset, limit) } }
-            val content = deferred.await()
+            val content = getContentDeferred(offset, limit).await()
             if (content != null) {
                 try {
                     val userRecords = UserRecords(JSONObject(content))
@@ -44,8 +42,7 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
         }
 
         launch {
-            val deferred = coroutineScope { async { getContent(offset, limit) } }
-            val content = deferred.await()
+            val content = getContentDeferred(offset, limit).await()
             if (content != null) {
                 try {
                     val userRecords = UserRecords(JSONObject(content))
@@ -61,19 +58,39 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
         }
     }
 
-    private suspend fun getContent(offset: Int = 0, limit: Int = 10): String? =
-        withContext(Dispatchers.IO) {
-            val buffer = StringBuffer().append(URL)
-
-            if (offset < 0 || limit < 0) {
-                throw IllegalArgumentException("offsetまたはlimitに負の値は取れません")
-            } else {
-                //Urlにパラメータ追加
-                buffer.append("?offset=$offset&limit=&limit=$limit")
+    override fun getAdditionalRecords(offset: Int, limit: Int, callback: AlbumDataSource.LoadAdditionalRecordCallback) {
+        launch {
+            val content = getContentDeferred(offset, limit).await()
+            if (content != null) {
+                try {
+                    val userRecords = UserRecords(JSONObject(content))
+                    callback.onAdditionalRecordLoaded(userRecords)
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                    callback.onDataNotAvailable()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                    callback.onDataNotAvailable()
+                }
             }
+        }
+    }
 
-            val request = Request.Builder().url(buffer.toString()).build()
-            val response = client.newCall(request).execute()
-            response.body()?.string()
+    private suspend fun getContentDeferred(offset: Int = 0, limit: Int = 10): Deferred<String?> =
+        async {
+            withContext(Dispatchers.IO) {
+                val buffer = StringBuffer().append(URL)
+
+                if (offset < 0 || limit < 0) {
+                    throw IllegalArgumentException("offsetまたはlimitに負の値は取れません")
+                } else {
+                    //Urlにパラメータ追加
+                    buffer.append("?offset=$offset&limit=&limit=$limit")
+                }
+
+                val request = Request.Builder().url(buffer.toString()).build()
+                val response = client.newCall(request).execute()
+                response.body()?.string()
+            }
         }
 }
