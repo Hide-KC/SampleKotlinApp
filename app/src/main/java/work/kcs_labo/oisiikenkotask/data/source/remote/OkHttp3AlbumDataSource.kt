@@ -1,5 +1,6 @@
 package work.kcs_labo.oisiikenkotask.data.source.remote
 
+import android.util.Log
 import kotlinx.coroutines.*
 import okhttp3.*
 import org.json.JSONException
@@ -11,16 +12,17 @@ import java.io.IOException
 const val URL = "https://cooking-records.herokuapp.com/cooking_records"
 
 class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
-    private val client = OkHttpClient()
-    val cache = linkedMapOf<String, UserRecords>()
-
     private val job = Job()
     override val coroutineContext = Dispatchers.Main + job
+
+    private val client = OkHttpClient()
+    val cache = linkedMapOf<String, UserRecords>()
 
     override fun getCookingRecords(offset: Int, limit: Int, callback: AlbumDataSource.LoadRecordsCallback) {
         launch {
             val content = getContentDeferred(offset, limit).await()
             if (content != null) {
+                Log.d(OkHttp3AlbumDataSource::class.java.simpleName, content)
                 try {
                     val userRecords = UserRecords(JSONObject(content))
                     callback.onRecordsLoaded(userRecords)
@@ -28,6 +30,9 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
                     e.printStackTrace()
                     callback.onDataNotAvailable()
                 } catch (e: IOException) {
+                    e.printStackTrace()
+                    callback.onDataNotAvailable()
+                } catch (e: TimeoutCancellationException) {
                     e.printStackTrace()
                     callback.onDataNotAvailable()
                 }
@@ -53,6 +58,9 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
                 } catch (e: IOException) {
                     e.printStackTrace()
                     callback.onDataNotAvailable()
+                } catch (e: TimeoutCancellationException) {
+                    e.printStackTrace()
+                    callback.onDataNotAvailable()
                 }
             }
         }
@@ -69,6 +77,9 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
                     e.printStackTrace()
                     callback.onDataNotAvailable()
                 } catch (e: IOException) {
+                    e.printStackTrace()
+                    callback.onDataNotAvailable()
+                } catch (e: TimeoutCancellationException) {
                     e.printStackTrace()
                     callback.onDataNotAvailable()
                 }
