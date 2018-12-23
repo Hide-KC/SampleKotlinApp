@@ -10,9 +10,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        <GridView
-                android:id="@+id/record_list"
-                android:numColumns="2"
+        <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler"
                 android:record_list="@{viewmodel.records}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

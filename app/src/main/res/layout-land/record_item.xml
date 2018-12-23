@@ -7,6 +7,8 @@
     </data>
 
     <android.support.constraint.ConstraintLayout
+            android:id="@+id/parentLayout"
+            android:ripple="@{record.recipeType}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -15,6 +17,9 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:image_url="@{record.imageUrl}"
+                android:src="@drawable/ic_loading_image"
+                android:scaleY="0.25"
+                android:scaleX="0.25"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -31,9 +36,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@{record.recordedTime}"
+                android:background="@drawable/textview_frame"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginEnd="8dp"
                 android:textSize="12sp"
+                android:padding="@dimen/textViewPadding"
                 app:layout_constraintHorizontal_weight="1"
                 app:layout_constraintStart_toEndOf="@+id/guideline" app:layout_constraintTop_toTopOf="@+id/image"/>
 
@@ -43,7 +50,10 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:text="@{record.comment}"
-                android:maxLines="3"
+                android:maxLines="2"
+                android:background="@drawable/textview_frame"
+                android:padding="@dimen/textViewPadding"
+                android:textSize="10sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"

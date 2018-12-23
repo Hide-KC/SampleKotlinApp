@@ -1,23 +1,24 @@
 package work.kcs_labo.oisiikenkotask.main
 
-import android.arch.lifecycle.Observer
 import android.content.res.Configuration
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.GridView
-import android.widget.ListView
 import kotlinx.android.synthetic.main.main_act.*
 import work.kcs_labo.oisiikenkotask.R
+import work.kcs_labo.oisiikenkotask.data.CookingRecord
 import work.kcs_labo.oisiikenkotask.data.UserRecords
 import work.kcs_labo.oisiikenkotask.data.source.AlbumDataSource
 import work.kcs_labo.oisiikenkotask.databinding.MainFragBinding
-import work.kcs_labo.oisiikenkotask.list.RecordAdapter
+import work.kcs_labo.oisiikenkotask.list.RecyclerRecordAdapter
 
 class MainFragment : Fragment() {
     private lateinit var binding: MainFragBinding
@@ -32,7 +33,7 @@ class MainFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.main_frag, container, false)
         binding.viewmodel = (activity as MainActivity).obtainViewModel()
 
-        setupListView()
+        setupRecyclerView()
 
         return binding.root
     }
@@ -75,14 +76,36 @@ class MainFragment : Fragment() {
                         }
                     })
                 }
-                R.id.search_toolbar_menu_item -> {}
+                R.id.search_toolbar_menu_item -> {
+                    TODO("コメント検索の実装")
+                }
             }
             return@setOnMenuItemClickListener true
         }
     }
 
-    private fun setupListView(){
-        //TODO ListViewのラッパ作ってEmptyView実装？
+    private fun setupRecyclerView(){
+        val layoutManager = when (resources.configuration.orientation) {
+            Configuration.ORIENTATION_PORTRAIT -> {
+                GridLayoutManager(context, 2)
+            }
+            Configuration.ORIENTATION_LANDSCAPE -> {
+                LinearLayoutManager(context)
+            } else -> throw NotImplementedError()
+        }
+
+        binding.recycler.layoutManager = layoutManager
+        binding.recycler.adapter = RecyclerRecordAdapter(listOf()).apply {
+            setOnItemClickListener(object : RecyclerRecordAdapter.OnItemClickListener {
+                override fun onItemClick(record: CookingRecord) {
+                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                }
+            })
+        }
+
+        binding.recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+        })
     }
 
     companion object {
