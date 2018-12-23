@@ -19,10 +19,16 @@ fun ImageView.setImageUrl(url: String) {
 @BindingAdapter("android:record_list")
 fun ListView.setCookingRecords(records: List<CookingRecord>?) {
     when {
-        adapter != null || records == null -> return
-        else -> {
+        records == null -> return
+        adapter == null -> {
             adapter = RecordAdapter(context).also {
                 it.addAll(records)
+            }
+        }
+        adapter != null -> {
+            (adapter as RecordAdapter).apply {
+                clear()
+                addAll(records)
             }
         }
     }
@@ -31,10 +37,16 @@ fun ListView.setCookingRecords(records: List<CookingRecord>?) {
 @BindingAdapter("android:record_list")
 fun GridView.setCookingRecords(records: List<CookingRecord>?) {
     when {
-        adapter != null || records == null -> return
-        else -> {
+        records == null -> return
+        adapter == null -> {
             adapter = RecordAdapter(context).also {
                 it.addAll(records)
+            }
+        }
+        adapter != null -> {
+            (adapter as RecordAdapter).apply {
+                clear()
+                addAll(records)
             }
         }
     }
