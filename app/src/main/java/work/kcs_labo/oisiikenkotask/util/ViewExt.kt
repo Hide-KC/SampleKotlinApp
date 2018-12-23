@@ -20,7 +20,6 @@ fun ImageView.setImageUrl(url: String) {
     this.scaleY = 1.0f
 }
 
-//ListViewを拡張
 @BindingAdapter("android:record_list")
 fun ListView.setCookingRecords(records: List<CookingRecord>?) {
     when {
@@ -31,9 +30,9 @@ fun ListView.setCookingRecords(records: List<CookingRecord>?) {
             }
         }
         adapter != null -> {
-            (adapter as RecordAdapter).apply {
-                clear()
-                addAll(records)
+            this.adapter = (adapter as RecordAdapter).also {
+                it.clear()
+                it.addAll(records)
             }
         }
     }
@@ -49,19 +48,27 @@ fun GridView.setCookingRecords(records: List<CookingRecord>?) {
             }
         }
         adapter != null -> {
-            (adapter as RecordAdapter).apply {
-                clear()
-                addAll(records)
+            this.adapter = (adapter as RecordAdapter).also {
+                it.clear()
+                it.addAll(records)
             }
         }
     }
 }
 
+//RecyclerViewにrecordsをバインド
 @BindingAdapter("android:record_list")
 fun RecyclerView.setCookingRecords(records: List<CookingRecord>?){
-    when (records) {
-        null -> return
-        else -> this.adapter = RecyclerRecordAdapter(records)
+    when {
+        records == null -> return
+        adapter == null -> {
+            this.adapter = RecyclerRecordAdapter(records)
+        }
+        adapter != null -> {
+            this.adapter = (this.adapter as RecyclerRecordAdapter).also {
+                it.records = records
+            }
+        }
     }
 }
 

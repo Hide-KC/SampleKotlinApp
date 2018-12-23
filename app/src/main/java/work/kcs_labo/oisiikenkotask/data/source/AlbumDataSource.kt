@@ -1,6 +1,7 @@
 package work.kcs_labo.oisiikenkotask.data.source
 
 import work.kcs_labo.oisiikenkotask.data.CookingRecord
+import work.kcs_labo.oisiikenkotask.data.Pagination
 import work.kcs_labo.oisiikenkotask.data.UserRecords
 
 interface AlbumDataSource {

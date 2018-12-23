@@ -1,5 +1,6 @@
 package work.kcs_labo.oisiikenkotask.main
 
+import android.arch.lifecycle.Observer
 import android.content.res.Configuration
 import android.databinding.DataBindingUtil
 import android.os.Bundle
@@ -62,7 +63,7 @@ class MainFragment : Fragment() {
         toolbar.setOnMenuItemClickListener { menuItem ->
             when(menuItem.itemId){
                 R.id.sync_toolbar_menu_item -> {
-                    binding.viewmodel?.startSync(0,50, object : AlbumDataSource.LoadRecordsCallback {
+                    binding.viewmodel?.startSync(callback =  object : AlbumDataSource.LoadRecordsCallback {
                         override fun onRecordsLoaded(userRecords: UserRecords) {
                             binding.viewmodel?.setRecords(userRecords.cookingRecords)
 
@@ -95,6 +96,18 @@ class MainFragment : Fragment() {
         }
 
         binding.recycler.layoutManager = layoutManager
+        binding.viewmodel?.scrollPosition?.observe(this, Observer {
+            //android:selectedItemPositionが取得できないためやむなく。
+            val positionIndex = layoutManager.findFirstVisibleItemPosition()
+            val startView = layoutManager.getChildAt(0)
+            val positionOffset = if (startView == null){
+                0
+            } else {
+                startView.top - binding.recycler.paddingTop
+            }
+            layoutManager.scrollToPositionWithOffset(positionIndex, positionOffset)
+        })
+
         binding.recycler.adapter = RecyclerRecordAdapter(listOf()).apply {
             setOnItemClickListener(object : RecyclerRecordAdapter.OnItemClickListener {
                 override fun onItemClick(record: CookingRecord) {
@@ -104,7 +117,36 @@ class MainFragment : Fragment() {
         }
 
         binding.recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
 
+                val totalCount = binding.recycler.adapter?.itemCount
+                val childCount = binding.recycler.childCount
+                val _layoutManager = binding.recycler.layoutManager
+
+                val firstItemPosition = when (_layoutManager) {
+                    is GridLayoutManager -> {
+                        _layoutManager.findFirstVisibleItemPosition()
+                    }
+                    is LinearLayoutManager -> {
+                        _layoutManager.findFirstVisibleItemPosition()
+                    }
+                    else -> throw NotImplementedError()
+                }
+
+                if (totalCount == childCount + firstItemPosition){
+                    binding.viewmodel?.updateSync(callback = object : AlbumDataSource.LoadAdditionalRecordCallback{
+                        override fun onAdditionalRecordLoaded(userRecords: UserRecords) {
+                            binding.viewmodel?.addRecords(userRecords.cookingRecords)
+                            binding.viewmodel?.setScrollPosition(firstItemPosition)
+                        }
+
+                        override fun onDataNotAvailable() {
+                            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                        }
+                    })
+                }
+            }
         })
     }
 
