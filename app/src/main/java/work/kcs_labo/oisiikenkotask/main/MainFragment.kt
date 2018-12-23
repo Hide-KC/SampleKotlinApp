@@ -30,9 +30,7 @@ class MainFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.main_frag, container, false)
-
         binding.viewmodel = (activity as MainActivity).obtainViewModel()
-
 
         setupListView()
 
@@ -52,40 +50,13 @@ class MainFragment : Fragment() {
                 R.string.drawer_open,
                 R.string.drawer_close)
                 .apply { syncState() })
-
     }
 
     private fun setupToolbar() {
         val activity = this.activity as MainActivity
         val toolbar = activity.toolbar
 
-        binding.viewmodel?.records?.observe(this, Observer {
-            val listView = when (resources.configuration.orientation){
-                Configuration.ORIENTATION_PORTRAIT -> binding.recordList as GridView
-                else -> binding.recordList as ListView
-            }
-
-            if (it != null) {
-                when (listView.adapter) {
-                    null -> {
-                        val adapter = RecordAdapter(context!!)
-                        adapter.addAll(it)
-                        listView.adapter = adapter
-
-                        for(i in 0 until adapter.count){
-                            Log.d(this.javaClass.simpleName, adapter.getItem(i)?.comment)
-                        }
-                    }
-                    else -> {
-                        val adapter = listView.adapter as RecordAdapter
-                        adapter.apply {
-                            clear()
-                            addAll(it)
-                        }
-                    }
-                }
-            }
-        })
+        binding.setLifecycleOwner(this)
 
         toolbar.setOnMenuItemClickListener { menuItem ->
             when(menuItem.itemId){
