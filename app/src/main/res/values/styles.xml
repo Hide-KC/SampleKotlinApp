@@ -8,4 +8,14 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="android:background">@color/toolbar_back</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+    </style>
+
+    <style name="PopupToolbarTheme" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:background">@color/toolbar_back</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
 </resources>

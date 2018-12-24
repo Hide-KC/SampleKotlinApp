@@ -8,11 +8,13 @@
     <android.support.constraint.ConstraintLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@drawable/cork_pattern"
+    >
 
         <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler"
-                android:record_list="@{viewmodel.records}"
+                android:record_list="@{viewmodel.filteredRecords}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
         />
