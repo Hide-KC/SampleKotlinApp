@@ -14,12 +14,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.main_act.*
+import kotlinx.android.synthetic.main.main_act.view.*
 import work.kcs_labo.oisiikenkotask.R
 import work.kcs_labo.oisiikenkotask.data.CookingRecord
 import work.kcs_labo.oisiikenkotask.data.UserRecords
 import work.kcs_labo.oisiikenkotask.data.source.AlbumDataSource
 import work.kcs_labo.oisiikenkotask.databinding.MainFragBinding
 import work.kcs_labo.oisiikenkotask.list.RecyclerRecordAdapter
+import work.kcs_labo.oisiikenkotask.util.RecipeTypeEnum
 
 class MainFragment : Fragment() {
     private lateinit var binding: MainFragBinding
@@ -52,6 +54,17 @@ class MainFragment : Fragment() {
                 R.string.drawer_open,
                 R.string.drawer_close)
                 .apply { syncState() })
+
+        drawer.nav_view.setNavigationItemSelectedListener{ menuItem ->
+            when (menuItem.itemId){
+                R.id.all_navigation_menu_item ->{ binding.viewmodel?.setRecipeType(null) }
+                R.id.main_dish_navigation_item ->{ binding.viewmodel?.setRecipeType(RecipeTypeEnum.MAIN_DISH) }
+                R.id.side_dish_navigation_item ->{ binding.viewmodel?.setRecipeType(RecipeTypeEnum.SIDE_DISH) }
+                R.id.soup_navigation_item ->{ binding.viewmodel?.setRecipeType(RecipeTypeEnum.SOUP)}
+                else ->{ throw IllegalArgumentException() }
+            }
+            return@setNavigationItemSelectedListener true
+        }
     }
 
     private fun setupToolbar() {
@@ -76,9 +89,6 @@ class MainFragment : Fragment() {
                             TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                         }
                     })
-                }
-                R.id.search_toolbar_menu_item -> {
-                    TODO("コメント検索の実装")
                 }
             }
             return@setOnMenuItemClickListener true
@@ -111,13 +121,14 @@ class MainFragment : Fragment() {
         binding.recycler.adapter = RecyclerRecordAdapter(listOf()).apply {
             setOnItemClickListener(object : RecyclerRecordAdapter.OnItemClickListener {
                 override fun onItemClick(record: CookingRecord) {
-                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                 }
             })
         }
 
         binding.recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                //更新時のスクロール位置復元
                 super.onScrolled(recyclerView, dx, dy)
 
                 val totalCount = binding.recycler.adapter?.itemCount
@@ -135,7 +146,7 @@ class MainFragment : Fragment() {
                 }
 
                 if (totalCount == childCount + firstItemPosition){
-                    binding.viewmodel?.updateSync(callback = object : AlbumDataSource.LoadAdditionalRecordCallback{
+                    binding.viewmodel?.addSync(callback = object : AlbumDataSource.LoadAdditionalRecordCallback{
                         override fun onAdditionalRecordLoaded(userRecords: UserRecords) {
                             binding.viewmodel?.addRecords(userRecords.cookingRecords)
                             binding.viewmodel?.setScrollPosition(firstItemPosition)

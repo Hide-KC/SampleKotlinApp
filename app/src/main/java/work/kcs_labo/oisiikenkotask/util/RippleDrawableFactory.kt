@@ -1,34 +1,32 @@
 package work.kcs_labo.oisiikenkotask.util
 
+import android.content.Context
 import android.content.res.ColorStateList
-import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.RippleDrawable
+import android.support.v4.content.ContextCompat
 import work.kcs_labo.oisiikenkotask.R
 
-const val MAIN_DISH = "main_dish"
-const val SIDE_DISH = "side_dish"
-const val SOUP = "soup"
 object RippleDrawableFactory {
-    fun create(recipeType: String): RippleDrawable {
-        val colorStateList = setColorStateList(recipeType)
-        return RippleDrawable(colorStateList, ColorDrawable(getResolvedColor(recipeType)), ColorDrawable(Color.LTGRAY))
+    fun create(context: Context, recipeType: String): RippleDrawable {
+        val colorStateList = setColorStateList(context, recipeType)
+        return RippleDrawable(colorStateList, ColorDrawable(getResolvedColor(context, recipeType)), ColorDrawable(Color.LTGRAY))
     }
 
-    private fun getResolvedColor(recipeType: String): Int{
+    private fun getResolvedColor(context:Context, recipeType: String): Int{
         return when(recipeType){
-            MAIN_DISH -> Color.parseColor("#eddf9a")
-            SIDE_DISH -> Color.parseColor("#70bfb0")
-            SOUP -> Color.parseColor("#796ebf")
+            RecipeTypeEnum.MAIN_DISH.recipeType -> ContextCompat.getColor(context, R.color.main_dish_color)
+            RecipeTypeEnum.SIDE_DISH.recipeType -> ContextCompat.getColor(context, R.color.side_dish_color)
+            RecipeTypeEnum.SOUP.recipeType -> ContextCompat.getColor(context, R.color.soup_color)
             else -> throw IllegalArgumentException("unknown recipeType")
         }
     }
 
-    private fun setColorStateList(recipeType: String): ColorStateList{
-        val resolvedColor = getResolvedColor(recipeType)
+    private fun setColorStateList(context:Context, recipeType: String): ColorStateList{
+        val resolvedColor = getResolvedColor(context, recipeType)
         return when(recipeType) {
-            MAIN_DISH -> {
+            RecipeTypeEnum.MAIN_DISH.recipeType -> {
                 ColorStateList(
                     //States
                     arrayOf(
@@ -39,7 +37,7 @@ object RippleDrawableFactory {
                     intArrayOf(resolvedColor, Color.DKGRAY)
                 )
             }
-            SIDE_DISH -> {
+            RecipeTypeEnum.SIDE_DISH.recipeType -> {
                 ColorStateList(
                     //States
                     arrayOf(
@@ -50,7 +48,7 @@ object RippleDrawableFactory {
                     intArrayOf(resolvedColor, Color.DKGRAY)
                 )
             }
-            SOUP -> {
+            RecipeTypeEnum.SOUP.recipeType -> {
                 ColorStateList(
                     //States
                     arrayOf(
