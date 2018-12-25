@@ -5,17 +5,19 @@ import kotlinx.coroutines.*
 import okhttp3.*
 import org.json.JSONException
 import org.json.JSONObject
+import work.kcs_labo.oisiikenkotask.data.CookingRecord
 import work.kcs_labo.oisiikenkotask.data.Pagination
 import work.kcs_labo.oisiikenkotask.data.UserRecords
 import work.kcs_labo.oisiikenkotask.data.source.LIMIT
 import work.kcs_labo.oisiikenkotask.data.source.AlbumDataSource
+import work.kcs_labo.oisiikenkotask.data.source.cache.CookingRecordCache
 import java.io.IOException
 import java.util.concurrent.atomic.AtomicBoolean
 
 const val URL = "https://cooking-records.herokuapp.com/cooking_records"
 
 class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
-    private val job = Job()
+    private var job = Job()
     override val coroutineContext = Dispatchers.Main + job
     private val atomicBoolean: AtomicBoolean = AtomicBoolean(false)
 
@@ -26,14 +28,13 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
     override fun getCookingRecords(offset: Int, limit: Int, callback: AlbumDataSource.LoadRecordsCallback) {
         if (!atomicBoolean.get()){
             atomicBoolean.set(true)
-            launch {
+            job = launch {
                 val content = getContentDeferred(offset, limit).await()
                 if (content != null) {
                     try {
                         val userRecords = UserRecords(JSONObject(content))
                         lastPagination = userRecords.pagination
                         callback.onRecordsLoaded(userRecords)
-                        atomicBoolean.set(false)
                     } catch (e: JSONException) {
                         e.printStackTrace()
                         callback.onDataNotAvailable()
@@ -43,6 +44,8 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
                     } catch (e: TimeoutCancellationException) {
                         e.printStackTrace()
                         callback.onDataNotAvailable()
+                    } finally {
+                        atomicBoolean.set(false)
                     }
                 }
             }
@@ -59,7 +62,7 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
 
         if (!atomicBoolean.get()){
             atomicBoolean.set(true)
-            launch {
+            job = launch {
                 val content = getContentDeferred(offset, limit).await()
                 if (content != null) {
                     try {
@@ -78,8 +81,6 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
                     }
                 }
             }
-        } else {
-
         }
     }
 
@@ -102,7 +103,7 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
 
         if (!atomicBoolean.get()){
             atomicBoolean.set(true)
-            launch {
+            job = launch {
                 val content = getContentDeferred(_offset, _limit).await()
                 if (content != null) {
                     try {
@@ -128,21 +129,32 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
         }
     }
 
+    /**
+     * コルーチンの中断
+     */
+    override fun cancelRequest() {
+        if (job.isActive) {
+            job.cancel()
+        }
+    }
+
     private suspend fun getContentDeferred(offset: Int = 0, limit: Int = 10): Deferred<String?> =
-        async {
-            withContext(Dispatchers.IO) {
-                val buffer = StringBuffer().append(URL)
+        coroutineScope {
+            async {
+                withContext(Dispatchers.IO) {
+                    val buffer = StringBuffer().append(URL)
+                    Log.d(this.javaClass.simpleName, "getContentDeferred!")
+                    if (offset < 0 || limit < 0) {
+                        throw IllegalArgumentException("offsetまたはlimitに負の値は取れません")
+                    } else {
+                        //Urlにパラメータ追加
+                        buffer.append("?offset=$offset&limit=&limit=$limit")
+                    }
 
-                if (offset < 0 || limit < 0) {
-                    throw IllegalArgumentException("offsetまたはlimitに負の値は取れません")
-                } else {
-                    //Urlにパラメータ追加
-                    buffer.append("?offset=$offset&limit=&limit=$limit")
+                    val request = Request.Builder().url(buffer.toString()).build()
+                    val response = client.newCall(request).execute()
+                    response.body()?.string()
                 }
-
-                val request = Request.Builder().url(buffer.toString()).build()
-                val response = client.newCall(request).execute()
-                response.body()?.string()
             }
         }
 }

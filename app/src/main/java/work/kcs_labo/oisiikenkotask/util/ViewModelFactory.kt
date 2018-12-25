@@ -20,8 +20,10 @@ class ViewModelFactory private constructor(
 
     companion object {
         var INSTANCE: ViewModelFactory? = null
+        //RemoteDataSourceの注入
         fun getInstance(application: Application) =
-                INSTANCE ?: ViewModelFactory(application, AlbumRepository(OkHttp3AlbumDataSource())).also { INSTANCE = it }
+                INSTANCE ?: ViewModelFactory(application, AlbumRepository(OkHttp3AlbumDataSource()))
+                    .also { INSTANCE = it }
 
         fun destroyInstance() {
             INSTANCE = null

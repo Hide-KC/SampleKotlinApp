@@ -1,7 +1,5 @@
 package work.kcs_labo.oisiikenkotask.data.source
 
-import work.kcs_labo.oisiikenkotask.data.Pagination
-
 const val LIMIT = 10
 class AlbumRepository(private val albumDataSource: AlbumDataSource):
     AlbumDataSource {
@@ -16,5 +14,9 @@ class AlbumRepository(private val albumDataSource: AlbumDataSource):
 
     override fun getAdditionalRecords(offset: Int, limit: Int, callback: AlbumDataSource.LoadAdditionalRecordCallback){
         albumDataSource.getAdditionalRecords(offset, limit, callback)
+    }
+
+    override fun cancelRequest() {
+        albumDataSource.cancelRequest()
     }
 }

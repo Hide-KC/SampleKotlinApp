@@ -1,7 +1,6 @@
 package work.kcs_labo.oisiikenkotask.data.source
 
 import work.kcs_labo.oisiikenkotask.data.CookingRecord
-import work.kcs_labo.oisiikenkotask.data.Pagination
 import work.kcs_labo.oisiikenkotask.data.UserRecords
 
 interface AlbumDataSource {
@@ -26,4 +25,6 @@ interface AlbumDataSource {
     fun getCookingRecord(offset: Int, limit: Int, recordId: Int, callback: GetRecordCallback)
 
     fun getAdditionalRecords(offset: Int, limit: Int, callback: LoadAdditionalRecordCallback)
+
+    fun cancelRequest()
 }

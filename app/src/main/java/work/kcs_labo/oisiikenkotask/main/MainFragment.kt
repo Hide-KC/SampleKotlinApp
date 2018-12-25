@@ -37,6 +37,7 @@ class MainFragment : Fragment() {
         binding.viewmodel = (activity as MainActivity).obtainViewModel()
 
         setupRecyclerView()
+        binding.setLifecycleOwner(this)
 
         return binding.root
     }
@@ -70,8 +71,6 @@ class MainFragment : Fragment() {
     private fun setupToolbar() {
         val activity = this.activity as MainActivity
         val toolbar = activity.toolbar
-
-        binding.setLifecycleOwner(this)
 
         toolbar.setOnMenuItemClickListener { menuItem ->
             when(menuItem.itemId){

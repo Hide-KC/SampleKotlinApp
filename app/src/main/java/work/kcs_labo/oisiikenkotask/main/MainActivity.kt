@@ -59,6 +59,11 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    override fun onStop() {
+        super.onStop()
+        mainViewModel.cancelRequest()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         ViewModelFactory.destroyInstance()

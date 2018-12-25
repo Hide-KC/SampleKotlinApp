@@ -48,6 +48,10 @@ class MainViewModel(
         headerDrawable.value = resId
     }
 
+    fun cancelRequest(){
+        albumRepository.cancelRequest()
+    }
+
     /**
      * 現在のフィルタを実行
      */
