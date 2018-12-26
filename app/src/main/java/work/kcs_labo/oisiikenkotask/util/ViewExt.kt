@@ -63,6 +63,6 @@ fun RecyclerView.setCookingRecords(records: List<CookingRecord>?){
 
 @BindingAdapter("android:ripple")
 fun ViewGroup.setRippleEffect(recipeType: String){
-    val rippleDrawable = RippleDrawableFactory.create(context, recipeType)
+    val rippleDrawable = RippleDrawableSelector.select(context, recipeType)
     this.background = rippleDrawable
 }
