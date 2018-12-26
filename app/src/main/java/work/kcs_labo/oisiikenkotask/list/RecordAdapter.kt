@@ -11,6 +11,10 @@ import work.kcs_labo.oisiikenkotask.R
 import work.kcs_labo.oisiikenkotask.data.CookingRecord
 import work.kcs_labo.oisiikenkotask.databinding.RecordItemBinding
 
+/**
+ * Linear/Grid ListView with DataBinding.
+ * Replace ViewHolder Pattern
+ */
 class RecordAdapter(context: Context) : ArrayAdapter<CookingRecord>(context, android.R.layout.simple_list_item_1) {
     private val inflater = context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     private lateinit var binding: RecordItemBinding

@@ -5,16 +5,14 @@ import kotlinx.coroutines.*
 import okhttp3.*
 import org.json.JSONException
 import org.json.JSONObject
-import work.kcs_labo.oisiikenkotask.data.CookingRecord
 import work.kcs_labo.oisiikenkotask.data.Pagination
 import work.kcs_labo.oisiikenkotask.data.UserRecords
 import work.kcs_labo.oisiikenkotask.data.source.LIMIT
 import work.kcs_labo.oisiikenkotask.data.source.AlbumDataSource
-import work.kcs_labo.oisiikenkotask.data.source.cache.CookingRecordCache
 import java.io.IOException
 import java.util.concurrent.atomic.AtomicBoolean
 
-const val URL = "https://cooking-records.herokuapp.com/cooking_records"
+private const val URL = "https://cooking-records.herokuapp.com/cooking_records"
 
 class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
     private var job = Job()
@@ -24,11 +22,14 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
     private val client = OkHttpClient()
     val cache = linkedMapOf<String, UserRecords>()
     private var lastPagination: Pagination? = null
+    private val handler = CoroutineExceptionHandler { _, exception ->
+        Log.d(this.javaClass.simpleName, exception.message)
+    }
 
     override fun getCookingRecords(offset: Int, limit: Int, callback: AlbumDataSource.LoadRecordsCallback) {
         if (!atomicBoolean.get()){
             atomicBoolean.set(true)
-            job = launch {
+            job = launch(handler) {
                 val content = getContentDeferred(offset, limit).await()
                 if (content != null) {
                     try {
@@ -49,8 +50,6 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
                     }
                 }
             }
-        } else {
-
         }
     }
 
@@ -62,7 +61,7 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
 
         if (!atomicBoolean.get()){
             atomicBoolean.set(true)
-            job = launch {
+            job = launch(handler) {
                 val content = getContentDeferred(offset, limit).await()
                 if (content != null) {
                     try {
@@ -78,6 +77,8 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
                     } catch (e: TimeoutCancellationException) {
                         e.printStackTrace()
                         callback.onDataNotAvailable()
+                    } finally {
+                        atomicBoolean.set(false)
                     }
                 }
             }
@@ -103,7 +104,7 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
 
         if (!atomicBoolean.get()){
             atomicBoolean.set(true)
-            job = launch {
+            job = launch(handler) {
                 val content = getContentDeferred(_offset, _limit).await()
                 if (content != null) {
                     try {
@@ -121,11 +122,11 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
                     } catch (e: TimeoutCancellationException) {
                         e.printStackTrace()
                         callback.onDataNotAvailable()
+                    } finally {
+                        atomicBoolean.set(false)
                     }
                 }
             }
-        } else {
-
         }
     }
 
@@ -135,6 +136,7 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
     override fun cancelRequest() {
         if (job.isActive) {
             job.cancel()
+            atomicBoolean.set(false)
         }
     }
 

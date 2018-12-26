@@ -1,8 +1,11 @@
 package work.kcs_labo.oisiikenkotask.list
 
+import android.content.res.Configuration
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
+import work.kcs_labo.oisiikenkotask.R
 import work.kcs_labo.oisiikenkotask.data.CookingRecord
 import work.kcs_labo.oisiikenkotask.databinding.RecordItemBinding
 
@@ -25,9 +28,15 @@ class RecyclerRecordAdapter(var records: List<CookingRecord>) : RecyclerView.Ada
         val record = records[position]
         holder.binding.record = record
         holder.binding.parentLayout.setOnClickListener{
-
             listener?.onItemClick(record)
         }
+
+        val animation = when (holder.binding.root.context.resources.configuration.orientation) {
+            Configuration.ORIENTATION_PORTRAIT -> AnimationUtils.loadAnimation(holder.binding.root.context, R.anim.scale_fade_in)
+            Configuration.ORIENTATION_LANDSCAPE -> AnimationUtils.loadAnimation(holder.binding.root.context, R.anim.push_right_in)
+            else -> throw IllegalStateException()
+        }
+        holder.binding.root.animation = animation
     }
 
     interface OnItemClickListener {
