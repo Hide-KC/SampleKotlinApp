@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="textViewCornerRadius">4dp</dimen>
-    <dimen name="textViewPadding">6dp</dimen>
+    <dimen name="textview_corner_radius">4dp</dimen>
+    <dimen name="textview_padding">6dp</dimen>
     <dimen name="cardView_margin">4dp</dimen>
     <dimen name="cardView_elevation">4dp</dimen>
+    <dimen name="image_frameWidth">2dp</dimen>
+    <dimen name="image_corner_radius">4dp</dimen>
 </resources>

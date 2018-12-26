@@ -18,4 +18,12 @@
         <item name="android:textColor">@android:color/white</item>
     </style>
 
+    <style name="ImageTheme">
+        <item name="android:background">@drawable/image_frame</item>
+        <item name="android:bottomLeftRadius">@dimen/image_corner_radius</item>
+        <item name="android:bottomRightRadius">@dimen/image_corner_radius</item>
+        <item name="android:topLeftRadius">@dimen/image_corner_radius</item>
+        <item name="android:topRightRadius">@dimen/image_corner_radius</item>
+    </style>
+
 </resources>

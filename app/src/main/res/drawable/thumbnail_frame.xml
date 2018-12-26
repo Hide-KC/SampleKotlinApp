@@ -2,4 +2,10 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
        android:shape="oval">
 
+    <stroke android:color="@android:color/white" android:width="@dimen/image_frameWidth"/>
+    <padding android:top="@dimen/image_frameWidth"
+             android:right="@dimen/image_frameWidth"
+             android:left="@dimen/image_frameWidth"
+             android:bottom="@dimen/image_frameWidth" />
+
 </shape>

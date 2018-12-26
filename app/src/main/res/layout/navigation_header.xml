@@ -1,10 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="128dp"
-        android:background="@color/colorPrimary">
 
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable name="viewmodel" type="work.kcs_labo.oisiikenkotask.main.MainViewModel"/>
+    </data>
 
+    <android.support.constraint.ConstraintLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:background="@color/colorPrimary">
 
-</android.support.constraint.ConstraintLayout>
+        <ImageView
+                android:id="@+id/header_image"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:src="@{viewmodel.headerDrawable}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="32dp" android:layout_marginBottom="32dp"
+                app:layout_constraintDimensionRatio="w,1:1" android:scaleType="fitCenter"
+                android:adjustViewBounds="true"/>
+
+    </android.support.constraint.ConstraintLayout>
+</layout>
+
