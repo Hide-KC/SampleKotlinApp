@@ -21,6 +21,7 @@ class MainViewModel(
     val headerDrawableId = MutableLiveData<Int>()
     val recordModels = MutableLiveData<List<RecyclerRecordModel>>()
     private var orgModels: List<RecyclerRecordModel> = listOf()
+    private var navigator: MainNavigator? = null
 
     fun startSync(limit: Int = LIMIT, callback: AlbumDataSource.LoadRecordsCallback) {
         albumRepository.getCookingRecords(0, limit, callback)
@@ -29,7 +30,7 @@ class MainViewModel(
     fun setRecords(records: List<CookingRecord>){
         val list = mutableListOf<RecyclerRecordModel>()
         for (record in records){
-            val model = RecyclerRecordModel(record)
+            val model = createModel(record)
             list.add(model)
         }
         orgModels = list
@@ -41,7 +42,7 @@ class MainViewModel(
     fun addRecords(records: List<CookingRecord>){
         val mutableList = orgModels.toMutableList()
         for (record in records){
-            val model = RecyclerRecordModel(record)
+            val model = createModel(record)
             mutableList.add(model)
         }
         orgModels = mutableList
@@ -61,6 +62,15 @@ class MainViewModel(
     fun cancelRequest(){
         albumRepository.cancelRequest()
     }
+
+    fun setNavigator(navigator: MainNavigator?){
+        this.navigator = navigator
+    }
+
+    private fun createModel(record: CookingRecord): RecyclerRecordModel =
+            RecyclerRecordModel(record).apply {
+                setNavigator(navigator)
+            }
 
     /**
      * 現在のフィルタを実行

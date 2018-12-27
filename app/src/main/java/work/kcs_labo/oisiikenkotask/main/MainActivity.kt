@@ -1,25 +1,36 @@
 package work.kcs_labo.oisiikenkotask.main
 
+import android.content.res.Configuration
 import android.databinding.DataBindingUtil
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.app.AppCompatDelegate
+import android.support.v7.widget.SearchView
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.main_act.*
 import work.kcs_labo.oisiikenkotask.R
+import work.kcs_labo.oisiikenkotask.data.CookingRecord
 import work.kcs_labo.oisiikenkotask.databinding.MainActBinding
 import work.kcs_labo.oisiikenkotask.databinding.NavigationHeaderBinding
 import work.kcs_labo.oisiikenkotask.util.RecipeTypeEnum
 import work.kcs_labo.oisiikenkotask.util.ViewModelFactory
 import work.kcs_labo.oisiikenkotask.util.obtainViewModel
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), MainNavigator {
+
     lateinit var binding: MainActBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.main_act)
+        //View inflate
+        binding = DataBindingUtil.setContentView<MainActBinding>(this, R.layout.main_act).also {
+            it.viewmodel = obtainViewModel()
+        }.also {
+            it.setLifecycleOwner(this)
+        }
+        binding.viewmodel?.setNavigator(this)
 
         //HeaderView inflate
         val _bind =
@@ -32,8 +43,6 @@ class MainActivity : AppCompatActivity() {
         //VectorリソースからDrawable生成
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
 
-        binding.viewmodel = obtainViewModel()
-        binding.setLifecycleOwner(this)
         setSupportActionBar(toolbar)
 
         if (savedInstanceState == null){
@@ -58,10 +67,10 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        val searchView = item.actionView as android.support.v7.widget.SearchView
+        val searchView = item.actionView as SearchView
         searchView.queryHint = "コメント検索"
         searchView.maxWidth = Int.MAX_VALUE
-        searchView.setOnQueryTextListener(object : android.support.v7.widget.SearchView.OnQueryTextListener{
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(searchWord: String?): Boolean {
                 //onQueryTextSubmitが2回呼ばれる現象の回避
                 searchView.clearFocus()
@@ -84,6 +93,19 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         ViewModelFactory.destroyInstance()
+    }
+
+    override fun onStartNewActivity() {
+        //今回は不要
+    }
+
+    override fun onOpenImage(record: CookingRecord) {
+        //ダイアログの表示、ImageViewの差し替え
+        when (resources.configuration.orientation){
+            Configuration.ORIENTATION_PORTRAIT -> { Log.d(this.javaClass.simpleName, "PORTRAIT")}
+            Configuration.ORIENTATION_LANDSCAPE -> { Log.d(this.javaClass.simpleName, "LANDSCAPE")}
+            else -> {}
+        }
     }
 
     fun obtainViewModel() = obtainViewModel(MainViewModel::class.java)

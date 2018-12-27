@@ -3,7 +3,6 @@ package work.kcs_labo.oisiikenkotask.list
 import android.content.res.Configuration
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
@@ -31,7 +30,8 @@ class RecyclerRecordAdapter : RecyclerView.Adapter<RecyclerRecordAdapter.Binding
         holder.binding.viewmodel = recordModel.apply {
             setOnItemClickListener(object : RecyclerRecordModel.OnItemClickListener{
                 override fun onItemClick(record: CookingRecord) {
-                    Log.d(this.javaClass.simpleName, record.recipeType)
+                    //アイテムタップ処理
+                    recordModel.openImage(record)
                 }
             })
         }

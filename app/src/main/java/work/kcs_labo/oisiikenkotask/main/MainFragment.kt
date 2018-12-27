@@ -38,7 +38,6 @@ class MainFragment : Fragment() {
         }
 
         setupRecyclerView()
-        binding.setLifecycleOwner(this)
 
         return binding.root
     }
@@ -78,7 +77,6 @@ class MainFragment : Fragment() {
                     binding.viewmodel?.startSync(callback =  object : AlbumDataSource.LoadRecordsCallback {
                         override fun onRecordsLoaded(userRecords: UserRecords) {
                             binding.viewmodel?.setRecords(userRecords.cookingRecords)
-
                             for (item in userRecords.cookingRecords) {
                                 Log.d(this@MainFragment.javaClass.simpleName, item.comment)
                             }
