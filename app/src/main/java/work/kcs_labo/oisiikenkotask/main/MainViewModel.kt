@@ -20,7 +20,7 @@ class MainViewModel(
     val scrollPosition = MutableLiveData<Int>()
     val headerDrawableId = MutableLiveData<Int>()
     val recordModels = MutableLiveData<List<RecyclerRecordModel>>()
-    private val orgRecordModels: List<RecyclerRecordModel> = listOf()
+    private var orgModels: List<RecyclerRecordModel> = listOf()
 
     fun startSync(limit: Int = LIMIT, callback: AlbumDataSource.LoadRecordsCallback) {
         albumRepository.getCookingRecords(0, limit, callback)
@@ -29,22 +29,25 @@ class MainViewModel(
     fun setRecords(records: List<CookingRecord>){
         val list = mutableListOf<RecyclerRecordModel>()
         for (record in records){
-            val viewModel = RecyclerRecordModel(record)
-            list.add(viewModel)
+            val model = RecyclerRecordModel(record)
+            list.add(model)
         }
-        recordModels.value = list
+        orgModels = list
+
+        val filteredList = getFilteredModels(list)
+        recordModels.value = filteredList
     }
 
     fun addRecords(records: List<CookingRecord>){
-        val list = recordModels.value
-        if (list != null){
-            val mutableList = list.toMutableList()
-            for (record in records){
-                val viewModel = RecyclerRecordModel(record)
-                mutableList.add(viewModel)
-            }
-            recordModels.value = mutableList
+        val mutableList = orgModels.toMutableList()
+        for (record in records){
+            val model = RecyclerRecordModel(record)
+            mutableList.add(model)
         }
+        orgModels = mutableList
+
+        val filteredList = getFilteredModels(mutableList)
+        recordModels.value = filteredList
     }
 
     fun addSync(offset: Int = 0, limit: Int = 10, callback: AlbumDataSource.LoadAdditionalRecordCallback){
@@ -62,22 +65,21 @@ class MainViewModel(
     /**
      * 現在のフィルタを実行
      */
-    private fun obtainFiltering(){
-//        val list = orgRecords
-//            .filter { record ->
-//                if (filtering.recipeTypeEnum == RecipeTypeEnum.ALL_DISH){
-//                    true
-//                } else {
-//                    record.recipeType == filtering.recipeTypeEnum.recipeType
-//                }
-//            }.filter { record ->
-//                if (filtering.searchWord == null || filtering.searchWord!!.isEmpty()){
-//                    true
-//                } else {
-//                    record.comment.contains(filtering.searchWord!!)
-//                }
-//            }
-//        filteredRecords.value = list
+    private fun getFilteredModels(models: List<RecyclerRecordModel>): List<RecyclerRecordModel>{
+        return models
+            .filter { model ->
+                if (filtering.recipeTypeEnum == RecipeTypeEnum.ALL_DISH){
+                    true
+                } else {
+                    model.record.recipeType == filtering.recipeTypeEnum.recipeType
+                }
+            }.filter { model ->
+                if (filtering.searchWord == null || filtering.searchWord!!.isEmpty()){
+                    true
+                } else {
+                    model.record.comment.contains(filtering.searchWord!!)
+                }
+            }
     }
 
     /**
@@ -92,7 +94,7 @@ class MainViewModel(
             RecipeTypeEnum.SOUP -> R.drawable.ic_soup
         }
         headerDrawableId.value = resId
-        obtainFiltering()
+        recordModels.value = getFilteredModels(orgModels)
     }
 
     /**
@@ -101,7 +103,7 @@ class MainViewModel(
      */
     fun setSearchWord(searchWord: String?){
         filtering.searchWord = searchWord
-        obtainFiltering()
+        recordModels.value = getFilteredModels(orgModels)
     }
 
     /**
