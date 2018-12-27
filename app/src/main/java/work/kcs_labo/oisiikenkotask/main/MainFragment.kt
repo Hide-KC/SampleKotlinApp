@@ -14,7 +14,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.main_act.*
-import kotlinx.android.synthetic.main.main_act.view.*
 import work.kcs_labo.oisiikenkotask.R
 import work.kcs_labo.oisiikenkotask.data.CookingRecord
 import work.kcs_labo.oisiikenkotask.data.UserRecords
@@ -33,8 +32,10 @@ class MainFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.main_frag, container, false)
-        binding.viewmodel = (activity as MainActivity).obtainViewModel()
+        binding = MainFragBinding.inflate(inflater, container, false).also {
+            it.viewmodel = (activity as MainActivity).obtainViewModel()
+            it.setLifecycleOwner(this)
+        }
 
         setupRecyclerView()
         binding.setLifecycleOwner(this)
@@ -44,21 +45,20 @@ class MainFragment : Fragment() {
 
     //UIのアクションはFragmentでセット
     private fun setupDrawer(){
-        val activity = this.activity as MainActivity
-        val drawer = activity.drawer
+        val mainBinding = (activity as MainActivity).binding
 
-        drawer.addDrawerListener(
+        mainBinding.drawer.addDrawerListener(
             ActionBarDrawerToggle(
-                activity,
-                drawer,
-                activity.toolbar,
+                activity as MainActivity,
+                mainBinding.drawer,
+                mainBinding.toolbar,
                 R.string.drawer_open,
                 R.string.drawer_close)
                 .apply { syncState() })
 
-        drawer.nav_view.setNavigationItemSelectedListener{ menuItem ->
+        mainBinding.navView.setNavigationItemSelectedListener{ menuItem ->
             when (menuItem.itemId){
-                R.id.all_navigation_menu_item ->{ binding.viewmodel?.setRecipeType(null) }
+                R.id.all_navigation_menu_item ->{ binding.viewmodel?.setRecipeType(RecipeTypeEnum.ALL_DISH) }
                 R.id.main_dish_navigation_item ->{ binding.viewmodel?.setRecipeType(RecipeTypeEnum.MAIN_DISH) }
                 R.id.side_dish_navigation_item ->{ binding.viewmodel?.setRecipeType(RecipeTypeEnum.SIDE_DISH) }
                 R.id.soup_navigation_item ->{ binding.viewmodel?.setRecipeType(RecipeTypeEnum.SOUP)}
@@ -105,8 +105,10 @@ class MainFragment : Fragment() {
         }
 
         binding.recycler.layoutManager = layoutManager
+        binding.adapter = RecyclerRecordAdapter()
+
+        //xmlでandroid:selectedItemPositionが取得できないためやむなくobserve
         binding.viewmodel?.scrollPosition?.observe(this, Observer {
-            //android:selectedItemPositionが取得できないためやむなく。
             val positionIndex = layoutManager.findFirstVisibleItemPosition()
             val startView = layoutManager.getChildAt(0)
             val positionOffset = if (startView == null){
@@ -116,14 +118,6 @@ class MainFragment : Fragment() {
             }
             layoutManager.scrollToPositionWithOffset(positionIndex, positionOffset)
         })
-
-        binding.recycler.adapter = RecyclerRecordAdapter(listOf()).apply {
-            setOnItemClickListener(object : RecyclerRecordAdapter.OnItemClickListener {
-                override fun onItemClick(record: CookingRecord) {
-                    //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                }
-            })
-        }
 
         binding.recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -149,6 +143,10 @@ class MainFragment : Fragment() {
                         override fun onAdditionalRecordLoaded(userRecords: UserRecords) {
                             binding.viewmodel?.addRecords(userRecords.cookingRecords)
                             binding.viewmodel?.setScrollPosition(firstItemPosition)
+
+                            for (item in userRecords.cookingRecords) {
+                                Log.d(this@MainFragment.javaClass.simpleName, item.comment)
+                            }
                         }
 
                         override fun onDataNotAvailable() {

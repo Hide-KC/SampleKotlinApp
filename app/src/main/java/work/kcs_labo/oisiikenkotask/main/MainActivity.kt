@@ -1,28 +1,45 @@
 package work.kcs_labo.oisiikenkotask.main
 
+import android.databinding.DataBindingUtil
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatDelegate
 import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.main_act.*
 import work.kcs_labo.oisiikenkotask.R
+import work.kcs_labo.oisiikenkotask.databinding.MainActBinding
+import work.kcs_labo.oisiikenkotask.databinding.NavigationHeaderBinding
+import work.kcs_labo.oisiikenkotask.util.RecipeTypeEnum
 import work.kcs_labo.oisiikenkotask.util.ViewModelFactory
 import work.kcs_labo.oisiikenkotask.util.obtainViewModel
 
 class MainActivity : AppCompatActivity() {
-
-    private lateinit var mainViewModel: MainViewModel
+    lateinit var binding: MainActBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.main_act)
+        binding = DataBindingUtil.setContentView(this, R.layout.main_act)
 
-        mainViewModel = obtainViewModel()
+        //HeaderView inflate
+        val _bind =
+            NavigationHeaderBinding.inflate(layoutInflater, binding.navView, false).also {
+                it.viewmodel = obtainViewModel()
+                it.setLifecycleOwner(this)
+            }
+        binding.navView.addHeaderView(_bind.root)
+
+        //VectorリソースからDrawable生成
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
+
+        binding.viewmodel = obtainViewModel()
+        binding.setLifecycleOwner(this)
         setSupportActionBar(toolbar)
 
         if (savedInstanceState == null){
             val transaction = supportFragmentManager.beginTransaction()
             transaction.replace(R.id.contentView, MainFragment.newInstance()).commit()
+            binding.viewmodel?.setRecipeType(RecipeTypeEnum.ALL_DISH)
         }
     }
 
@@ -36,7 +53,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
-                mainViewModel.setSearchWord(null)
+                binding.viewmodel?.setSearchWord(null)
                 return true
             }
         })
@@ -48,7 +65,7 @@ class MainActivity : AppCompatActivity() {
             override fun onQueryTextSubmit(searchWord: String?): Boolean {
                 //onQueryTextSubmitが2回呼ばれる現象の回避
                 searchView.clearFocus()
-                mainViewModel.setSearchWord(searchWord)
+                binding.viewmodel?.setSearchWord(searchWord)
                 return false
             }
 
@@ -61,7 +78,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        mainViewModel.cancelRequest()
+        binding.viewmodel?.cancelRequest()
     }
 
     override fun onDestroy() {

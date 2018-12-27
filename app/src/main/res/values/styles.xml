@@ -26,4 +26,9 @@
         <item name="android:topRightRadius">@dimen/image_corner_radius</item>
     </style>
 
+    <style name="ThumbnailTheme">
+        <item name="android:background">@drawable/thumbnail_frame</item>
+        <item name="android:elevation">@dimen/normal_elevation</item>
+    </style>
+
 </resources>

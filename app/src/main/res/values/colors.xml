@@ -5,6 +5,7 @@
     <color name="colorAccent">#D81B60</color>
 
     <color name="iconColorPrimary">#FFFFFFFF</color>
+    <color name="iconColorPrimaryDark">#FF444444</color>
     <color name="textViewBackColor">#ffffffff</color>
     <color name="toolbar_back">#ff9e8a7c</color>
 

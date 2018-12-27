@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:bind="http://schemas.android.com/apk/res-auto">
     <data>
+        <variable name="adapter" type="work.kcs_labo.oisiikenkotask.list.RecyclerRecordAdapter"/>
         <variable name="viewmodel" type="work.kcs_labo.oisiikenkotask.main.MainViewModel" />
     </data>
 
     <android.support.constraint.ConstraintLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/cork_pattern"
@@ -14,7 +15,8 @@
 
         <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler"
-                android:record_list="@{viewmodel.filteredRecords}"
+                android:adapter="@{adapter}"
+                bind:viewmodels="@{viewmodel.recordModels}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
         />

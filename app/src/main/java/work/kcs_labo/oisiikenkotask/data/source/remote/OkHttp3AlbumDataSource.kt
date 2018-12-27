@@ -136,8 +136,8 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
     override fun cancelRequest() {
         if (job.isActive) {
             job.cancel()
-            atomicBoolean.set(false)
         }
+        atomicBoolean.set(false)
     }
 
     private suspend fun getContentDeferred(offset: Int = 0, limit: Int = 10): Deferred<String?> =

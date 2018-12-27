@@ -2,6 +2,7 @@ package work.kcs_labo.oisiikenkotask.util
 
 import android.content.res.Configuration
 import android.databinding.BindingAdapter
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -11,13 +12,13 @@ import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import work.kcs_labo.oisiikenkotask.R
-import work.kcs_labo.oisiikenkotask.data.CookingRecord
 import work.kcs_labo.oisiikenkotask.list.RecyclerRecordAdapter
+import work.kcs_labo.oisiikenkotask.list.RecyclerRecordModel
 import kotlin.math.roundToInt
 
 //拡張関数でImageViewを拡張
 //BindingAdapterアノテーションでxmlに要素を追加できる
-@BindingAdapter("android:image_url")
+@BindingAdapter("bind:image_url")
 fun ImageView.setImageUrl(url: String) {
     val requestOptions = when (context.resources.configuration.orientation) {
         Configuration.ORIENTATION_PORTRAIT -> {
@@ -45,23 +46,22 @@ fun ImageView.setImageUrl(url: String) {
     this.scaleY = 1.0f
 }
 
-//RecyclerViewにrecordsをバインド
-@BindingAdapter("android:record_list")
-fun RecyclerView.setCookingRecords(records: List<CookingRecord>?){
-    when {
-        records == null -> return
-        adapter == null -> {
-            this.adapter = RecyclerRecordAdapter(records)
-        }
-        adapter != null -> {
-            this.adapter = (this.adapter as RecyclerRecordAdapter).also {
-                it.records = records
-            }
-        }
+@BindingAdapter("bind:vector_src")
+fun ImageView.setVectorSrc(resId: Int){
+    this.setImageResource(resId)
+}
+
+@BindingAdapter("bind:viewmodels")
+fun RecyclerView.setViewModels(recordModels: List<RecyclerRecordModel>?){
+    if (recordModels != null){
+        val adapter = this.adapter as RecyclerRecordAdapter
+        val diff = DiffUtil.calculateDiff(RecyclerRecordAdapter.Callback(adapter.recordModels, recordModels), true)
+        adapter.recordModels = recordModels.toList()
+        diff.dispatchUpdatesTo(adapter)
     }
 }
 
-@BindingAdapter("android:ripple")
+@BindingAdapter("bind:ripple")
 fun ViewGroup.setRippleEffect(recipeType: String){
     val rippleDrawable = RippleDrawableSelector.select(context, recipeType)
     this.background = rippleDrawable

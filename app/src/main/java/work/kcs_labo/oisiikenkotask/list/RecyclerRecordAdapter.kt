@@ -1,7 +1,9 @@
 package work.kcs_labo.oisiikenkotask.list
 
 import android.content.res.Configuration
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
@@ -9,8 +11,8 @@ import work.kcs_labo.oisiikenkotask.R
 import work.kcs_labo.oisiikenkotask.data.CookingRecord
 import work.kcs_labo.oisiikenkotask.databinding.RecordItemBinding
 
-class RecyclerRecordAdapter(var records: List<CookingRecord>) : RecyclerView.Adapter<RecyclerRecordAdapter.BindingHolder>() {
-    private var listener: OnItemClickListener? = null
+class RecyclerRecordAdapter : RecyclerView.Adapter<RecyclerRecordAdapter.BindingHolder>() {
+    var recordModels: List<RecyclerRecordModel> = listOf()
 
     // Viewの生成 (invoked by the layout manager)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BindingHolder {
@@ -20,15 +22,22 @@ class RecyclerRecordAdapter(var records: List<CookingRecord>) : RecyclerView.Ada
     }
 
     override fun getItemCount(): Int {
-        return records.count()
+        return recordModels.count()
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(holder: BindingHolder, position: Int) {
-        val record = records[position]
-        holder.binding.record = record
+        val recordModel = recordModels[position]
+        holder.binding.viewmodel = recordModel.apply {
+            setOnItemClickListener(object : RecyclerRecordModel.OnItemClickListener{
+                override fun onItemClick(record: CookingRecord) {
+                    Log.d(this.javaClass.simpleName, record.recipeType)
+                }
+            })
+        }
+
         holder.binding.parentLayout.setOnClickListener{
-            listener?.onItemClick(record)
+            holder.binding.viewmodel?.itemClick(recordModels[position].record)
         }
 
         val animation = when (holder.binding.root.context.resources.configuration.orientation) {
@@ -39,16 +48,23 @@ class RecyclerRecordAdapter(var records: List<CookingRecord>) : RecyclerView.Ada
         holder.binding.root.animation = animation
     }
 
-    interface OnItemClickListener {
-        fun onItemClick(record: CookingRecord)
-    }
-
-    fun setOnItemClickListener(listener: OnItemClickListener){
-        this.listener = listener
-    }
-
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder.
     class BindingHolder(var binding: RecordItemBinding): RecyclerView.ViewHolder(binding.root)
+
+    //差分検知
+    class Callback(private val old: List<RecyclerRecordModel>,
+                   private val aNew: List<RecyclerRecordModel>) : DiffUtil.Callback(){
+
+        override fun getOldListSize(): Int = old.size
+
+        override fun getNewListSize(): Int = aNew.size
+
+        override fun areItemsTheSame(oldPosition: Int, newPosition: Int): Boolean =
+            old[oldPosition].record == aNew[newPosition].record
+
+        override fun areContentsTheSame(oldPosition: Int, newPosition: Int): Boolean =
+            old[oldPosition] == aNew[newPosition]
+    }
 }

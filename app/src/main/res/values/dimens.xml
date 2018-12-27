@@ -6,4 +6,5 @@
     <dimen name="cardView_elevation">4dp</dimen>
     <dimen name="image_frameWidth">2dp</dimen>
     <dimen name="image_corner_radius">4dp</dimen>
+    <dimen name="normal_elevation">4dp</dimen>
 </resources>
