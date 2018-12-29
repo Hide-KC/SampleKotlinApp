@@ -18,25 +18,29 @@ import kotlin.math.roundToInt
 
 //拡張関数でImageViewを拡張
 //BindingAdapterアノテーションでxmlに要素を追加できる
-@BindingAdapter("bind:image_url")
-fun ImageView.setImageUrl(url: String) {
-    val requestOptions = when (context.resources.configuration.orientation) {
-        Configuration.ORIENTATION_PORTRAIT -> {
-            RequestOptions()
-                .transforms(
-                    RoundedCorners(context.resources.getDimension(R.dimen.image_corner_radius).roundToInt()),
-                    CenterCrop()
-                )
-        }
-        Configuration.ORIENTATION_LANDSCAPE -> {
-            RequestOptions()
-                .transforms(
-                    CircleCrop(),
-                    CenterCrop()
-                )
-        }
-        else -> throw IllegalStateException()
-    }
+@BindingAdapter("bind:image_as_rect")
+fun ImageView.setImageAsRect(url: String?) {
+    val requestOptions = RequestOptions()
+        .transforms(
+            RoundedCorners(context.resources.getDimension(R.dimen.image_corner_radius).roundToInt()),
+            CenterCrop()
+        )
+
+    Glide.with(context)
+        .load(url)
+        .apply(requestOptions)
+        .into(this)
+    this.scaleX = 1.0f
+    this.scaleY = 1.0f
+}
+
+@BindingAdapter("bind:image_as_circle")
+fun ImageView.setImageAsCircle(url: String?) {
+    val requestOptions = RequestOptions()
+        .transforms(
+            CircleCrop(),
+            CenterCrop()
+        )
 
     Glide.with(context)
         .load(url)
