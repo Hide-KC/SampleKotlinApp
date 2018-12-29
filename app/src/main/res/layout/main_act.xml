@@ -25,6 +25,9 @@
                     android:id="@+id/toolbar"
                     android:elevation="4dp"
                     android:theme="@style/ToolbarTheme"
+                    app:subtitle="@{viewmodel.selectedRecipeType}"
+                    app:titleTextAppearance="@style/ToolbarTitleTextAppearance"
+                    app:subtitleTextAppearance="@style/ToolbarSubtitleTextAppearance"
                     app:popupTheme="@style/PopupToolbarTheme"
             />
 
