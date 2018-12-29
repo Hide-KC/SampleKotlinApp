@@ -15,21 +15,24 @@ import java.util.concurrent.atomic.AtomicBoolean
 private const val URL = "https://cooking-records.herokuapp.com/cooking_records"
 
 class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
-    private var job = Job()
-    override val coroutineContext = Dispatchers.Main + job
     private val atomicBoolean: AtomicBoolean = AtomicBoolean(false)
+    private var job = Job()
+    private val handler = CoroutineExceptionHandler { _, exception ->
+        Log.d(this.javaClass.simpleName, exception.message)
+        atomicBoolean.set(false)
+    }
+
+    override val coroutineContext = Dispatchers.Main + handler
 
     private val client = OkHttpClient()
     val cache = linkedMapOf<String, UserRecords>()
     private var lastPagination: Pagination? = null
-    private val handler = CoroutineExceptionHandler { _, exception ->
-        Log.d(this.javaClass.simpleName, exception.message)
-    }
+
 
     override fun getCookingRecords(offset: Int, limit: Int, callback: AlbumDataSource.LoadRecordsCallback) {
         if (!atomicBoolean.get()){
             atomicBoolean.set(true)
-            job = launch(handler) {
+            job = launch(coroutineContext) {
                 val content = getContentDeferred(offset, limit).await()
                 if (content != null) {
                     try {
@@ -61,7 +64,7 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
 
         if (!atomicBoolean.get()){
             atomicBoolean.set(true)
-            job = launch(handler) {
+            job = launch(coroutineContext) {
                 val content = getContentDeferred(offset, limit).await()
                 if (content != null) {
                     try {
@@ -104,7 +107,7 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
 
         if (!atomicBoolean.get()){
             atomicBoolean.set(true)
-            job = launch(handler) {
+            job = launch(coroutineContext) {
                 val content = getContentDeferred(_offset, _limit).await()
                 if (content != null) {
                     try {
@@ -134,9 +137,7 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
      * コルーチンの中断
      */
     override fun cancelRequest() {
-        if (job.isActive) {
-            job.cancel()
-        }
+        coroutineContext.cancel()
         atomicBoolean.set(false)
     }
 
