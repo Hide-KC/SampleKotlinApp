@@ -18,14 +18,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:minWidth="300dp"
+                bind:image_as_rect="@{viewmodel.displayRecord.imageUrl}"
                 app:layout_constraintHorizontal_weight="2"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp" android:layout_marginBottom="8dp"
-                android:scaleType="fitCenter" android:adjustViewBounds="true"
-                app:layout_constraintHorizontal_chainStyle="spread" app:layout_constraintDimensionRatio="h,1:1"
-                app:layout_constraintEnd_toStartOf="@+id/recycler" android:layout_marginEnd="8dp"/>
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                app:layout_constraintHorizontal_chainStyle="spread"
+                app:layout_constraintDimensionRatio="h,1:1"
+                app:layout_constraintEnd_toStartOf="@+id/recycler"
+                android:layout_marginEnd="8dp"/>
 
         <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler"
