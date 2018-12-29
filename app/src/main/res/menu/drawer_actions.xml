@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/all_navigation_menu_item"
           android:icon="@drawable/ic_round_restaurant"
-          android:title="@string/all_records" />
+          android:title="@string/all_dish" />
     <item android:id="@+id/main_dish_navigation_item"
           android:icon="@drawable/ic_fish"
           android:title="@string/main_dish" />

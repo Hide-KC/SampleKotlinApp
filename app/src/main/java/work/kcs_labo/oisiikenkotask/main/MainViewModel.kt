@@ -16,10 +16,13 @@ class MainViewModel(
     private val albumRepository: AlbumRepository
 ) : AndroidViewModel(application) {
 
-    private val filtering = Filtering()
     val scrollPosition = MutableLiveData<Int>()
     val headerDrawableId = MutableLiveData<Int>()
+    val selectedRecipeType = MutableLiveData<String>()
     val recordModels = MutableLiveData<List<RecyclerRecordModel>>()
+    val displayRecord = MutableLiveData<CookingRecord>()
+
+    private val filtering = Filtering()
     private var orgModels: List<RecyclerRecordModel> = listOf()
     private var navigator: MainNavigator? = null
 
@@ -67,10 +70,14 @@ class MainViewModel(
         this.navigator = navigator
     }
 
+    fun displayRecord(record: CookingRecord){
+        this.displayRecord.value = record
+    }
+
     private fun createModel(record: CookingRecord): RecyclerRecordModel =
-            RecyclerRecordModel(record).apply {
-                setNavigator(navigator)
-            }
+        RecyclerRecordModel(record).apply {
+            setNavigator(navigator)
+        }
 
     /**
      * 現在のフィルタを実行
@@ -97,14 +104,29 @@ class MainViewModel(
      */
     fun setRecipeType(enum: RecipeTypeEnum){
         filtering.recipeTypeEnum = enum
-        val resId = when (enum){
-            RecipeTypeEnum.ALL_DISH -> R.drawable.ic_round_restaurant
-            RecipeTypeEnum.MAIN_DISH -> R.drawable.ic_fish
-            RecipeTypeEnum.SIDE_DISH -> R.drawable.ic_salad
-            RecipeTypeEnum.SOUP -> R.drawable.ic_soup
+        var resId = 0
+        var dishStringId = 0
+        when (enum){
+            RecipeTypeEnum.ALL_DISH -> {
+                resId = R.drawable.ic_round_restaurant
+                dishStringId = R.string.all_dish
+            }
+            RecipeTypeEnum.MAIN_DISH -> {
+                resId = R.drawable.ic_fish
+                dishStringId = R.string.main_dish
+            }
+            RecipeTypeEnum.SIDE_DISH -> {
+                resId = R.drawable.ic_salad
+                dishStringId = R.string.side_dish
+            }
+            RecipeTypeEnum.SOUP -> {
+                resId = R.drawable.ic_soup
+                dishStringId = R.string.soup
+            }
         }
         headerDrawableId.value = resId
         recordModels.value = getFilteredModels(orgModels)
+        selectedRecipeType.value = getApplication<Application>().resources.getString(dishStringId)
     }
 
     /**

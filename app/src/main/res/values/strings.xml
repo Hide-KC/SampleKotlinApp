@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">料理記録アルバム</string>
-    <string name="all_records">すべての記録</string>
+    <string name="all_dish">すべての料理</string>
     <string name="main_dish">主菜</string>
     <string name="side_dish">副菜</string>
     <string name="soup">スープ</string>
@@ -10,5 +10,6 @@
     <string name="drawer_open">open</string>
     <string name="drawer_close">close</string>
     <string name="empty_text">まだ料理記録はありません</string>
+    <string name="get_records">更新ボタンを押すと記録を取得します</string>
 
 </resources>

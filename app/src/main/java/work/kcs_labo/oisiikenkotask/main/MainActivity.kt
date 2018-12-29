@@ -4,9 +4,9 @@ import android.content.res.Configuration
 import android.databinding.DataBindingUtil
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.app.DialogFragment
 import android.support.v7.app.AppCompatDelegate
 import android.support.v7.widget.SearchView
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.main_act.*
@@ -14,10 +14,12 @@ import work.kcs_labo.oisiikenkotask.R
 import work.kcs_labo.oisiikenkotask.data.CookingRecord
 import work.kcs_labo.oisiikenkotask.databinding.MainActBinding
 import work.kcs_labo.oisiikenkotask.databinding.NavigationHeaderBinding
+import work.kcs_labo.oisiikenkotask.dialog.ImageDialogFragment
 import work.kcs_labo.oisiikenkotask.util.RecipeTypeEnum
 import work.kcs_labo.oisiikenkotask.util.ViewModelFactory
 import work.kcs_labo.oisiikenkotask.util.obtainViewModel
 
+private const val IMAGE_DIALOG = "image_dialog"
 class MainActivity : AppCompatActivity(), MainNavigator {
 
     lateinit var binding: MainActBinding
@@ -46,8 +48,9 @@ class MainActivity : AppCompatActivity(), MainNavigator {
         setSupportActionBar(toolbar)
 
         if (savedInstanceState == null){
-            val transaction = supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.contentView, MainFragment.newInstance()).commit()
+            supportFragmentManager.beginTransaction().apply {
+                replace(R.id.contentView, MainFragment.newInstance())
+            }.commit()
             binding.viewmodel?.setRecipeType(RecipeTypeEnum.ALL_DISH)
         }
     }
@@ -85,9 +88,13 @@ class MainActivity : AppCompatActivity(), MainNavigator {
         return true
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onPause() {
+        super.onPause()
         binding.viewmodel?.cancelRequest()
+        val dialog = supportFragmentManager.findFragmentByTag(IMAGE_DIALOG)
+        if (dialog != null){
+            (dialog as DialogFragment).dismiss()
+        }
     }
 
     override fun onDestroy() {
@@ -102,8 +109,13 @@ class MainActivity : AppCompatActivity(), MainNavigator {
     override fun onOpenImage(record: CookingRecord) {
         //ダイアログの表示、ImageViewの差し替え
         when (resources.configuration.orientation){
-            Configuration.ORIENTATION_PORTRAIT -> { Log.d(this.javaClass.simpleName, "PORTRAIT")}
-            Configuration.ORIENTATION_LANDSCAPE -> { Log.d(this.javaClass.simpleName, "LANDSCAPE")}
+            Configuration.ORIENTATION_PORTRAIT -> {
+                val dialog = ImageDialogFragment.newInstance(record)
+                dialog.show(supportFragmentManager, IMAGE_DIALOG)
+            }
+            Configuration.ORIENTATION_LANDSCAPE -> {
+                binding.viewmodel?.displayRecord(record)
+            }
             else -> {}
         }
     }
