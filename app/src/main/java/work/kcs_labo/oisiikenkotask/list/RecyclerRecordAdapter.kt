@@ -37,7 +37,7 @@ class RecyclerRecordAdapter : RecyclerView.Adapter<RecyclerRecordAdapter.Binding
         }
 
         holder.binding.parentLayout.setOnClickListener{
-            holder.binding.viewmodel?.itemClick(recordModels[position].record)
+            holder.binding.viewmodel?.itemClick(recordModel.record)
         }
 
         val animation = when (holder.binding.root.context.resources.configuration.orientation) {
