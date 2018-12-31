@@ -9,6 +9,7 @@ import work.kcs_labo.oisiikenkotask.data.UserRecords
 import work.kcs_labo.oisiikenkotask.data.source.LIMIT
 import work.kcs_labo.oisiikenkotask.data.source.AlbumDataSource
 import work.kcs_labo.oisiikenkotask.data.source.cache.CookingRecordCache
+import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
 private const val URL = "https://cooking-records.herokuapp.com/cooking_records"
@@ -83,6 +84,7 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
         val _offset = if (lastOffset + LIMIT < total){
             lastOffset + LIMIT
         } else {
+            callback.onDataNotAvailable(EmptyStackException())
             return
         }
 

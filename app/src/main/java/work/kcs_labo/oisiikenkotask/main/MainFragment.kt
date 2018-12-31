@@ -14,6 +14,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import kotlinx.android.synthetic.main.main_act.*
 import kotlinx.android.synthetic.main.navigation_header.view.*
 import work.kcs_labo.oisiikenkotask.R
@@ -79,8 +80,13 @@ class MainFragment : Fragment() {
         toolbar.setOnMenuItemClickListener { menuItem ->
             when(menuItem.itemId){
                 R.id.sync_toolbar_menu_item -> {
+                    val rotateAnimation = AnimationUtils.loadAnimation(context, R.anim.linear_rotation)
+                    val syncView = activity.findViewById<View>(R.id.sync_toolbar_menu_item)
+                    syncView.startAnimation(rotateAnimation)
+
                     binding.viewmodel?.startSync(callback =  object : AlbumDataSource.LoadRecordsCallback {
                         override fun onRecordsLoaded(userRecords: UserRecords) {
+                            syncView.animation.cancel()
                             binding.viewmodel?.setRecords(userRecords.cookingRecords)
 
                             if (userRecords.cookingRecords.isNotEmpty()){
@@ -96,6 +102,7 @@ class MainFragment : Fragment() {
 
                         override fun onDataNotAvailable(e: Throwable) {
                             e.printStackTrace()
+                            //例外時の仮実装
                             Snackbar.make(binding.root, e.javaClass.simpleName, Snackbar.LENGTH_SHORT).show()
                         }
                     })
@@ -150,8 +157,13 @@ class MainFragment : Fragment() {
                 }
 
                 if (totalCount == childCount + firstItemPosition){
+                    val rotateAnimation = AnimationUtils.loadAnimation(context, R.anim.linear_rotation)
+                    val syncView = activity?.findViewById<View>(R.id.sync_toolbar_menu_item)
+                    syncView?.startAnimation(rotateAnimation)
+
                     binding.viewmodel?.addSync(callback = object : AlbumDataSource.LoadAdditionalRecordCallback{
                         override fun onAdditionalRecordLoaded(userRecords: UserRecords) {
+                            syncView?.animation?.cancel()
                             binding.viewmodel?.addRecords(userRecords.cookingRecords)
                             binding.viewmodel?.setScrollPosition(firstItemPosition)
 
@@ -162,6 +174,8 @@ class MainFragment : Fragment() {
 
                         override fun onDataNotAvailable(e: Throwable) {
                             e.printStackTrace()
+                            syncView?.animation?.cancel()
+                            //例外時の仮実装
                             Snackbar.make(binding.root, e.javaClass.simpleName, Snackbar.LENGTH_SHORT).show()
                         }
                     })
