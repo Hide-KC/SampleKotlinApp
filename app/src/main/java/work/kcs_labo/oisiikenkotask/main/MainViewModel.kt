@@ -4,6 +4,7 @@ import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.MutableLiveData
 import android.support.v4.content.ContextCompat
+import android.view.View
 import work.kcs_labo.oisiikenkotask.data.CookingRecord
 import work.kcs_labo.oisiikenkotask.data.source.LIMIT
 import work.kcs_labo.oisiikenkotask.data.source.AlbumDataSource
@@ -22,6 +23,7 @@ class MainViewModel(
     val selectedRecipeType = MutableLiveData<String>()
     val recordModels = MutableLiveData<List<RecyclerRecordModel>>()
     val displayRecord = MutableLiveData<CookingRecord>()
+    val emptyTextVisibility = MutableLiveData<Int>()
 
     private val filtering = Filtering()
     private var orgModels: List<RecyclerRecordModel> = listOf()
@@ -61,6 +63,12 @@ class MainViewModel(
 
     fun setScrollPosition(position: Int){
         scrollPosition.value = position
+    }
+
+    fun setVisibility(visibility: Int){
+        if (visibility == View.GONE || visibility == View.INVISIBLE || visibility == View.VISIBLE){
+            emptyTextVisibility.value = visibility
+        }
     }
 
     fun cancelRequest(){

@@ -82,6 +82,13 @@ class MainFragment : Fragment() {
                     binding.viewmodel?.startSync(callback =  object : AlbumDataSource.LoadRecordsCallback {
                         override fun onRecordsLoaded(userRecords: UserRecords) {
                             binding.viewmodel?.setRecords(userRecords.cookingRecords)
+
+                            if (userRecords.cookingRecords.isNotEmpty()){
+                                binding.viewmodel?.setVisibility(View.GONE)
+                            } else {
+                                binding.viewmodel?.setVisibility(View.VISIBLE)
+                            }
+
                             for (item in userRecords.cookingRecords) {
                                 Log.d(this@MainFragment.javaClass.simpleName, item.comment)
                             }

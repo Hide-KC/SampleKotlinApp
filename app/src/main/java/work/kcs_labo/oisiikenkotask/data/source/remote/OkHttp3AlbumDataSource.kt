@@ -17,7 +17,7 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
     private val atomicBoolean: AtomicBoolean = AtomicBoolean(false)
     private var job = Job()
 
-    override val coroutineContext = Dispatchers.Main + job
+    override val coroutineContext = Dispatchers.Main
 
     private val client = OkHttpClient()
     val cache = CookingRecordCache()
@@ -116,7 +116,7 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
      * コルーチンキャンセル
      */
     override fun cancelRequest() {
-        coroutineContext.cancel()
+        job.cancel()
         atomicBoolean.set(false)
     }
 
