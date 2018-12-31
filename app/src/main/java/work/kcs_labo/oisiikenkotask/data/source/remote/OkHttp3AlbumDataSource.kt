@@ -8,6 +8,7 @@ import work.kcs_labo.oisiikenkotask.data.Pagination
 import work.kcs_labo.oisiikenkotask.data.UserRecords
 import work.kcs_labo.oisiikenkotask.data.source.LIMIT
 import work.kcs_labo.oisiikenkotask.data.source.AlbumDataSource
+import work.kcs_labo.oisiikenkotask.data.source.cache.CookingRecordCache
 import java.util.concurrent.atomic.AtomicBoolean
 
 private const val URL = "https://cooking-records.herokuapp.com/cooking_records"
@@ -19,7 +20,7 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
     override val coroutineContext = Dispatchers.Main + job
 
     private val client = OkHttpClient()
-    val cache = linkedMapOf<String, UserRecords>()
+    val cache = CookingRecordCache()
     private lateinit var lastPagination: Pagination
 
     override fun getCookingRecords(offset: Int, limit: Int, callback: AlbumDataSource.LoadRecordsCallback) {
@@ -35,6 +36,7 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
                 if (content != null) {
                     try {
                         val userRecords = UserRecords(JSONObject(content))
+                        cache.putRecords(userRecords.cookingRecords)
                         lastPagination = userRecords.pagination
                         callback.onRecordsLoaded(userRecords)
                     } finally {
@@ -63,6 +65,7 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
                 if (content != null) {
                     try {
                         val userRecords = UserRecords(JSONObject(content))
+                        cache.putRecord(userRecords.cookingRecords[recordId])
                         callback.onRecordLoaded(userRecords.cookingRecords[recordId])
                     } finally {
                         atomicBoolean.set(false)
@@ -97,6 +100,7 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
                 if (content != null) {
                     try {
                         val userRecords = UserRecords(JSONObject(content))
+                        cache.putRecords(userRecords.cookingRecords)
                         Log.d(OkHttp3AlbumDataSource::class.java.simpleName, content)
                         lastPagination = userRecords.pagination
                         callback.onAdditionalRecordLoaded(userRecords)
