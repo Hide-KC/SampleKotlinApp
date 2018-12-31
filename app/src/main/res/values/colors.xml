@@ -9,7 +9,7 @@
     <color name="textViewBackColor">#ffffffff</color>
     <color name="toolbar_back">#ff9e8a7c</color>
 
-    <color name="all_dish_color">#517a00</color>
+    <color name="all_dish_color">#ff9e8a7c</color>
     <color name="main_dish_color">#eddf9a</color>
     <color name="side_dish_color">#70bfb0</color>
     <color name="soup_color">#796ebf</color>

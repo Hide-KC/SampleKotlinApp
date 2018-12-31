@@ -5,19 +5,20 @@ import work.kcs_labo.oisiikenkotask.data.UserRecords
 
 interface AlbumDataSource {
 
-    interface LoadRecordsCallback {
+    interface RecordError{
+        fun onDataNotAvailable(e: Throwable)
+    }
+
+    interface LoadRecordsCallback: RecordError {
         fun onRecordsLoaded(userRecords: UserRecords)
-        fun onDataNotAvailable()
     }
 
-    interface GetRecordCallback {
+    interface GetRecordCallback: RecordError {
         fun onRecordLoaded(cookingRecord: CookingRecord)
-        fun onDataNotAvailable()
     }
 
-    interface LoadAdditionalRecordCallback {
+    interface LoadAdditionalRecordCallback: RecordError {
         fun onAdditionalRecordLoaded(userRecords: UserRecords)
-        fun onDataNotAvailable()
     }
 
     fun getCookingRecords(offset: Int, limit: Int, callback: LoadRecordsCallback)

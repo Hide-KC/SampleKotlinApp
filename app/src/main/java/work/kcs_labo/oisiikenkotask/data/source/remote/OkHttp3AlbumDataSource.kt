@@ -3,13 +3,11 @@ package work.kcs_labo.oisiikenkotask.data.source.remote
 import android.util.Log
 import kotlinx.coroutines.*
 import okhttp3.*
-import org.json.JSONException
 import org.json.JSONObject
 import work.kcs_labo.oisiikenkotask.data.Pagination
 import work.kcs_labo.oisiikenkotask.data.UserRecords
 import work.kcs_labo.oisiikenkotask.data.source.LIMIT
 import work.kcs_labo.oisiikenkotask.data.source.AlbumDataSource
-import java.io.IOException
 import java.util.concurrent.atomic.AtomicBoolean
 
 private const val URL = "https://cooking-records.herokuapp.com/cooking_records"
@@ -17,37 +15,28 @@ private const val URL = "https://cooking-records.herokuapp.com/cooking_records"
 class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
     private val atomicBoolean: AtomicBoolean = AtomicBoolean(false)
     private var job = Job()
-    private val handler = CoroutineExceptionHandler { _, exception ->
-        Log.d(this.javaClass.simpleName, exception.message)
-        atomicBoolean.set(false)
-    }
 
-    override val coroutineContext = Dispatchers.Main + handler
+    override val coroutineContext = Dispatchers.Main + job
 
     private val client = OkHttpClient()
     val cache = linkedMapOf<String, UserRecords>()
-    private var lastPagination: Pagination? = null
-
+    private lateinit var lastPagination: Pagination
 
     override fun getCookingRecords(offset: Int, limit: Int, callback: AlbumDataSource.LoadRecordsCallback) {
         if (!atomicBoolean.get()){
             atomicBoolean.set(true)
-            job = launch(coroutineContext) {
+            val handler = CoroutineExceptionHandler { _, e ->
+                atomicBoolean.set(false)
+                callback.onDataNotAvailable(e)
+            }
+
+            job = launch(coroutineContext + handler) {
                 val content = getContentDeferred(offset, limit).await()
                 if (content != null) {
                     try {
                         val userRecords = UserRecords(JSONObject(content))
                         lastPagination = userRecords.pagination
                         callback.onRecordsLoaded(userRecords)
-                    } catch (e: JSONException) {
-                        e.printStackTrace()
-                        callback.onDataNotAvailable()
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                        callback.onDataNotAvailable()
-                    } catch (e: TimeoutCancellationException) {
-                        e.printStackTrace()
-                        callback.onDataNotAvailable()
                     } finally {
                         atomicBoolean.set(false)
                     }
@@ -64,22 +53,17 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
 
         if (!atomicBoolean.get()){
             atomicBoolean.set(true)
-            job = launch(coroutineContext) {
+            val handler = CoroutineExceptionHandler { _, e ->
+                atomicBoolean.set(false)
+                callback.onDataNotAvailable(e)
+            }
+
+            job = launch(coroutineContext + handler) {
                 val content = getContentDeferred(offset, limit).await()
                 if (content != null) {
                     try {
                         val userRecords = UserRecords(JSONObject(content))
                         callback.onRecordLoaded(userRecords.cookingRecords[recordId])
-                        atomicBoolean.set(false)
-                    } catch (e: JSONException) {
-                        e.printStackTrace()
-                        callback.onDataNotAvailable()
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                        callback.onDataNotAvailable()
-                    } catch (e: TimeoutCancellationException) {
-                        e.printStackTrace()
-                        callback.onDataNotAvailable()
                     } finally {
                         atomicBoolean.set(false)
                     }
@@ -89,16 +73,12 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
     }
 
     override fun getAdditionalRecords(offset: Int, limit: Int, callback: AlbumDataSource.LoadAdditionalRecordCallback) {
-        val lastOffset = lastPagination?.offset
-        val total = lastPagination?.total
+        val lastOffset = lastPagination.offset
+        val total = lastPagination.total
         val _limit = LIMIT
 
-        val _offset = if (lastOffset != null && total != null){
-            if (lastOffset + LIMIT < total){
-                lastOffset + LIMIT
-            } else {
-                return
-            }
+        val _offset = if (lastOffset + LIMIT < total){
+            lastOffset + LIMIT
         } else {
             return
         }
@@ -107,7 +87,12 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
 
         if (!atomicBoolean.get()){
             atomicBoolean.set(true)
-            job = launch(coroutineContext) {
+            val handler = CoroutineExceptionHandler { _, e ->
+                atomicBoolean.set(false)
+                callback.onDataNotAvailable(e)
+            }
+
+            job = launch(coroutineContext + handler) {
                 val content = getContentDeferred(_offset, _limit).await()
                 if (content != null) {
                     try {
@@ -115,16 +100,6 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
                         Log.d(OkHttp3AlbumDataSource::class.java.simpleName, content)
                         lastPagination = userRecords.pagination
                         callback.onAdditionalRecordLoaded(userRecords)
-                        atomicBoolean.set(false)
-                    } catch (e: JSONException) {
-                        e.printStackTrace()
-                        callback.onDataNotAvailable()
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                        callback.onDataNotAvailable()
-                    } catch (e: TimeoutCancellationException) {
-                        e.printStackTrace()
-                        callback.onDataNotAvailable()
                     } finally {
                         atomicBoolean.set(false)
                     }
@@ -134,7 +109,7 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
     }
 
     /**
-     * コルーチンの中断
+     * コルーチンキャンセル
      */
     override fun cancelRequest() {
         coroutineContext.cancel()

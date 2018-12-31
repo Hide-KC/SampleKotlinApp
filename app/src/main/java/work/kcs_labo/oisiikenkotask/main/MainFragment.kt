@@ -4,6 +4,7 @@ import android.animation.AnimatorInflater
 import android.arch.lifecycle.Observer
 import android.content.res.Configuration
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.widget.GridLayoutManager
@@ -86,8 +87,9 @@ class MainFragment : Fragment() {
                             }
                         }
 
-                        override fun onDataNotAvailable() {
-                            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                        override fun onDataNotAvailable(e: Throwable) {
+                            e.printStackTrace()
+                            Snackbar.make(binding.root, e.javaClass.simpleName, Snackbar.LENGTH_SHORT).show()
                         }
                     })
                 }
@@ -151,8 +153,9 @@ class MainFragment : Fragment() {
                             }
                         }
 
-                        override fun onDataNotAvailable() {
-                            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                        override fun onDataNotAvailable(e: Throwable) {
+                            e.printStackTrace()
+                            Snackbar.make(binding.root, e.javaClass.simpleName, Snackbar.LENGTH_SHORT).show()
                         }
                     })
                 }
