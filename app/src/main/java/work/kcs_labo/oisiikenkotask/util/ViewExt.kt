@@ -89,7 +89,7 @@ fun ViewGroup.setBackgroundColor(colorTo: Int){
 
     val colorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
     colorAnimation.setTarget(this)
-    colorAnimation.duration = 1000
+    colorAnimation.duration = 500
     colorAnimation.addUpdateListener { animator ->
         val animatedValue = animator.animatedValue as Int
         setBackgroundColor(Color.argb(Color.alpha(animatedValue), Color.red(animatedValue), Color.green(animatedValue), Color.blue(animatedValue)))
