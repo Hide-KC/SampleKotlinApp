@@ -45,7 +45,9 @@ class RecyclerRecordAdapter : RecyclerView.Adapter<RecyclerRecordAdapter.Binding
             Configuration.ORIENTATION_LANDSCAPE -> AnimationUtils.loadAnimation(holder.binding.root.context, R.anim.push_right_in)
             else -> throw IllegalStateException()
         }
+
         holder.binding.root.animation = animation
+        holder.binding.executePendingBindings()
     }
 
     // Provide a reference to the views for each data item
