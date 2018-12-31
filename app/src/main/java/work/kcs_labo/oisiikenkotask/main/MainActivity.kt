@@ -29,7 +29,6 @@ class MainActivity : AppCompatActivity(), MainNavigator {
         //View inflate
         binding = DataBindingUtil.setContentView<MainActBinding>(this, R.layout.main_act).also {
             it.viewmodel = obtainViewModel()
-        }.also {
             it.setLifecycleOwner(this)
         }
         binding.viewmodel?.setNavigator(this)
@@ -110,13 +109,18 @@ class MainActivity : AppCompatActivity(), MainNavigator {
         //ダイアログの表示、ImageViewの差し替え
         when (resources.configuration.orientation){
             Configuration.ORIENTATION_PORTRAIT -> {
-                val dialog = ImageDialogFragment.newInstance(record)
-                dialog.show(supportFragmentManager, IMAGE_DIALOG)
+                try {
+                    val dialog = ImageDialogFragment.newInstance(record)
+                    dialog.show(supportFragmentManager, IMAGE_DIALOG)
+                } catch (e: IllegalStateException){
+                    //一度Dialog表示後、画面回転させると発報……？
+                    e.printStackTrace()
+                }
             }
             Configuration.ORIENTATION_LANDSCAPE -> {
                 binding.viewmodel?.displayRecord(record)
             }
-            else -> {}
+            else -> { IllegalStateException() }
         }
     }
 

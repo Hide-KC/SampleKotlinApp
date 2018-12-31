@@ -3,7 +3,7 @@ package work.kcs_labo.oisiikenkotask.main
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.MutableLiveData
-import work.kcs_labo.oisiikenkotask.R
+import android.support.v4.content.ContextCompat
 import work.kcs_labo.oisiikenkotask.data.CookingRecord
 import work.kcs_labo.oisiikenkotask.data.source.LIMIT
 import work.kcs_labo.oisiikenkotask.data.source.AlbumDataSource
@@ -18,6 +18,7 @@ class MainViewModel(
 
     val scrollPosition = MutableLiveData<Int>()
     val headerDrawableId = MutableLiveData<Int>()
+    val headerColorTo = MutableLiveData<Int>()
     val selectedRecipeType = MutableLiveData<String>()
     val recordModels = MutableLiveData<List<RecyclerRecordModel>>()
     val displayRecord = MutableLiveData<CookingRecord>()
@@ -102,31 +103,15 @@ class MainViewModel(
     /**
      * レシピ種別のフィルタを設定
      */
-    fun setRecipeType(enum: RecipeTypeEnum){
+    fun setRecipeType(enum: RecipeTypeEnum): Boolean{
+        val isSameTypeSelected = enum == filtering.recipeTypeEnum
         filtering.recipeTypeEnum = enum
-        var resId = 0
-        var dishStringId = 0
-        when (enum){
-            RecipeTypeEnum.ALL_DISH -> {
-                resId = R.drawable.ic_round_restaurant
-                dishStringId = R.string.all_dish
-            }
-            RecipeTypeEnum.MAIN_DISH -> {
-                resId = R.drawable.ic_fish
-                dishStringId = R.string.main_dish
-            }
-            RecipeTypeEnum.SIDE_DISH -> {
-                resId = R.drawable.ic_salad
-                dishStringId = R.string.side_dish
-            }
-            RecipeTypeEnum.SOUP -> {
-                resId = R.drawable.ic_soup
-                dishStringId = R.string.soup
-            }
-        }
-        headerDrawableId.value = resId
+
+        headerDrawableId.value = enum.symbolIconId
+        headerColorTo.value = ContextCompat.getColor(getApplication(), enum.symbolColorId)
         recordModels.value = getFilteredModels(orgModels)
-        selectedRecipeType.value = getApplication<Application>().resources.getString(dishStringId)
+        selectedRecipeType.value = getApplication<Application>().resources.getString(enum.recipeStringId)
+        return isSameTypeSelected
     }
 
     /**

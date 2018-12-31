@@ -1,9 +1,16 @@
 package work.kcs_labo.oisiikenkotask.util
 
-import android.content.res.Configuration
+import android.animation.ArgbEvaluator
+import android.animation.ValueAnimator
 import android.databinding.BindingAdapter
+import android.graphics.Color
+import android.graphics.Interpolator
+import android.graphics.drawable.ColorDrawable
+import android.support.constraint.ConstraintLayout
+import android.support.v4.content.ContextCompat
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.Glide
@@ -69,4 +76,23 @@ fun RecyclerView.setViewModels(recordModels: List<RecyclerRecordModel>?){
 fun ViewGroup.setRippleEffect(recipeType: String){
     val rippleDrawable = RippleDrawableSelector.select(context, recipeType)
     this.background = rippleDrawable
+}
+
+@BindingAdapter("bind:animate_background_color")
+fun ViewGroup.setBackgroundColor(colorTo: Int){
+    val backgroundDrawable = background
+    val colorFrom = if (backgroundDrawable != null){
+        (background as ColorDrawable).color
+    } else {
+        ContextCompat.getColor(context, R.color.all_dish_color)
+    }
+
+    val colorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
+    colorAnimation.setTarget(this)
+    colorAnimation.duration = 1000
+    colorAnimation.addUpdateListener { animator ->
+        val animatedValue = animator.animatedValue as Int
+        setBackgroundColor(Color.argb(Color.alpha(animatedValue), Color.red(animatedValue), Color.green(animatedValue), Color.blue(animatedValue)))
+    }
+    colorAnimation.start()
 }

@@ -1,8 +1,8 @@
 package work.kcs_labo.oisiikenkotask.main
 
+import android.animation.AnimatorInflater
 import android.arch.lifecycle.Observer
 import android.content.res.Configuration
-import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.ActionBarDrawerToggle
@@ -14,8 +14,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.main_act.*
+import kotlinx.android.synthetic.main.navigation_header.view.*
 import work.kcs_labo.oisiikenkotask.R
-import work.kcs_labo.oisiikenkotask.data.CookingRecord
 import work.kcs_labo.oisiikenkotask.data.UserRecords
 import work.kcs_labo.oisiikenkotask.data.source.AlbumDataSource
 import work.kcs_labo.oisiikenkotask.databinding.MainFragBinding
@@ -63,6 +63,10 @@ class MainFragment : Fragment() {
                 R.id.soup_navigation_item ->{ binding.viewmodel?.setRecipeType(RecipeTypeEnum.SOUP)}
                 else ->{ throw IllegalArgumentException() }
             }
+
+            val headerImageAnimator = AnimatorInflater.loadAnimator(context, R.animator.push_below_bounce)
+            headerImageAnimator.setTarget(mainBinding.navView.header_image)
+            headerImageAnimator.start()
             return@setNavigationItemSelectedListener true
         }
     }
