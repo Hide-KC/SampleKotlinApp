@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:tools="http://schemas.android.com/tools"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:bind="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable name="viewmodel" type="work.kcs_labo.oisiikenkotask.list.RecyclerRecordModel" />
+    </data>
+
+    <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/cardView_margin"
+            app:cardElevation="@dimen/cardView_elevation"
+    >
+
+        <android.support.constraint.ConstraintLayout
+                android:id="@+id/parentLayout"
+                bind:ripple="@{viewmodel.record.recipeType}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/pin_brown"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:id="@+id/pin_image" android:layout_marginTop="8dp"/>
+
+            <ImageView
+                    android:id="@+id/image"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    bind:image_as_rect="@{viewmodel.record.imageUrl}"
+                    android:src="@drawable/ic_loading_image"
+                    android:scaleX="0.25"
+                    android:scaleY="0.25"
+                    android:theme="@style/ImageTheme"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintDimensionRatio="w,1:1" android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp" android:scaleType="fitCenter"
+                    android:adjustViewBounds="true" app:layout_constraintTop_toBottomOf="@+id/pin_image"
+                    android:layout_marginTop="8dp"/>
+
+            <TextView
+                    android:id="@+id/date"
+                    android:hint="日付"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@{viewmodel.record.recordedTime}"
+                    android:background="@drawable/textview_frame"
+                    android:padding="@dimen/textview_padding"
+                    app:layout_constraintTop_toBottomOf="@+id/image" app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="8dp" android:textSize="10sp"/>
+
+            <TextView
+                    android:id="@+id/comment"
+                    android:hint="コメント"
+                    android:layout_width="0dp"
+                    android:layout_height="64dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@{viewmodel.record.comment}"
+                    android:maxLines="3"
+                    android:ellipsize="end"
+                    android:background="@drawable/textview_frame"
+                    android:padding="@dimen/textview_padding"
+                    app:layout_constraintTop_toBottomOf="@+id/date"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp" app:layout_constraintVertical_bias="0.0" android:textSize="12sp"/>
+
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v7.widget.CardView>
+
+</layout>

@@ -8,4 +8,39 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="android:background">@color/toolbar_back</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+    </style>
+    
+    <style name="ToolbarTitleTextAppearance" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="ToolbarSubtitleTextAppearance" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="PopupToolbarTheme" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:background">@color/toolbar_back</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="ImageTheme">
+        <item name="android:background">@drawable/image_frame</item>
+        <item name="android:bottomLeftRadius">@dimen/image_corner_radius</item>
+        <item name="android:bottomRightRadius">@dimen/image_corner_radius</item>
+        <item name="android:topLeftRadius">@dimen/image_corner_radius</item>
+        <item name="android:topRightRadius">@dimen/image_corner_radius</item>
+    </style>
+
+    <style name="ImageThemeNoFrame" parent="ImageTheme">
+        <item name="android:background">@color/iconColorPrimaryDark</item>
+    </style>
+
+    <style name="ThumbnailTheme">
+        <item name="android:background">@drawable/thumbnail_frame</item>
+        <item name="android:elevation">@dimen/normal_elevation</item>
+    </style>
+
 </resources>

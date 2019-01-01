@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/all_navigation_menu_item"
+          android:icon="@drawable/ic_round_restaurant"
+          android:title="@string/all_dish" />
+    <item android:id="@+id/main_dish_navigation_item"
+          android:icon="@drawable/ic_fish"
+          android:title="@string/main_dish" />
+    <item android:id="@+id/side_dish_navigation_item"
+          android:icon="@drawable/ic_salad"
+          android:title="@string/side_dish" />
+    <item android:id="@+id/soup_navigation_item"
+          android:icon="@drawable/ic_soup"
+          android:title="@string/soup" />
+</menu>

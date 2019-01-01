@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable name="viewmodel" type="work.kcs_labo.oisiikenkotask.main.MainViewModel"/>
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+            android:id="@+id/navigation_header_frame"
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:background="@color/all_dish_color"
+            bind:animate_background_color="@{viewmodel.headerColorTo}">
+
+        <ImageView
+                android:id="@+id/header_image"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:theme="@style/ThumbnailTheme"
+                bind:vector_src="@{viewmodel.headerDrawableId}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="40dp"
+                app:layout_constraintDimensionRatio="w,1:1"
+                android:scaleType="centerCrop"
+                android:padding="12dp"
+                android:adjustViewBounds="true"/>
+
+    </android.support.constraint.ConstraintLayout>
+</layout>
+
