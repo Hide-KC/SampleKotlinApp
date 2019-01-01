@@ -1,9 +1,11 @@
 package work.kcs_labo.oisiikenkotask.main
 
+import android.arch.lifecycle.Observer
 import android.content.res.Configuration
 import android.databinding.DataBindingUtil
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AppCompatDelegate
 import android.support.v7.widget.SearchView
@@ -15,11 +17,13 @@ import work.kcs_labo.oisiikenkotask.data.CookingRecord
 import work.kcs_labo.oisiikenkotask.databinding.MainActBinding
 import work.kcs_labo.oisiikenkotask.databinding.NavigationHeaderBinding
 import work.kcs_labo.oisiikenkotask.dialog.ImageDialogFragment
+import work.kcs_labo.oisiikenkotask.dialog.OpenRecipeDialogFragment
 import work.kcs_labo.oisiikenkotask.util.RecipeTypeEnum
 import work.kcs_labo.oisiikenkotask.util.ViewModelFactory
 import work.kcs_labo.oisiikenkotask.util.obtainViewModel
 
 private const val IMAGE_DIALOG = "image_dialog"
+private const val OPEN_RECIPE_DIALOG = "open_recipe"
 class MainActivity : AppCompatActivity(), MainNavigator {
 
     lateinit var binding: MainActBinding
@@ -32,6 +36,9 @@ class MainActivity : AppCompatActivity(), MainNavigator {
             it.setLifecycleOwner(this)
         }
         binding.viewmodel?.setNavigator(this)
+
+        //ダイアログ選択の処理実装
+        setupDialogAction()
 
         //HeaderView inflate
         val _bind =
@@ -70,7 +77,7 @@ class MainActivity : AppCompatActivity(), MainNavigator {
         })
 
         val searchView = item.actionView as SearchView
-        searchView.queryHint = "コメント検索"
+        searchView.queryHint = getString(R.string.searchview_hint)
         searchView.maxWidth = Int.MAX_VALUE
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(searchWord: String?): Boolean {
@@ -89,7 +96,9 @@ class MainActivity : AppCompatActivity(), MainNavigator {
 
     override fun onPause() {
         super.onPause()
+        //コルーチンキャンセル
         binding.viewmodel?.cancelRequest()
+        //ダイアログ展開中ならdismiss
         val dialog = supportFragmentManager.findFragmentByTag(IMAGE_DIALOG)
         if (dialog != null){
             (dialog as DialogFragment).dismiss()
@@ -122,6 +131,27 @@ class MainActivity : AppCompatActivity(), MainNavigator {
             }
             else -> { IllegalStateException() }
         }
+    }
+
+    override fun onOpenRecipe(record: CookingRecord) {
+        try {
+            val dialog = OpenRecipeDialogFragment.newInstance(record)
+            dialog.show(supportFragmentManager, OPEN_RECIPE_DIALOG)
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun setupDialogAction(){
+        //ダイアログ処理を実装
+        binding.viewmodel?.openRecipeDialogOK?.observe(this, Observer {
+            //親アプリのレシピページを表示
+            Snackbar.make( binding.root, "Open Recipe", Snackbar.LENGTH_SHORT).show()
+        })
+        binding.viewmodel?.openRecipeDialogCancel?.observe(this, Observer {
+            //キャンセル
+            Snackbar.make( binding.root, "Not Open Recipe", Snackbar.LENGTH_SHORT).show()
+        })
     }
 
     fun obtainViewModel() = obtainViewModel(MainViewModel::class.java)

@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import work.kcs_labo.oisiikenkotask.R
-import work.kcs_labo.oisiikenkotask.data.CookingRecord
 import work.kcs_labo.oisiikenkotask.databinding.RecordItemBinding
 
 class RecyclerRecordAdapter : RecyclerView.Adapter<RecyclerRecordAdapter.BindingHolder>() {
@@ -27,17 +26,15 @@ class RecyclerRecordAdapter : RecyclerView.Adapter<RecyclerRecordAdapter.Binding
     // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(holder: BindingHolder, position: Int) {
         val recordModel = recordModels[position]
-        holder.binding.viewmodel = recordModel.apply {
-            setOnItemClickListener(object : RecyclerRecordModel.OnItemClickListener{
-                override fun onItemClick(record: CookingRecord) {
-                    //アイテムタップ処理
-                    recordModel.openImage(record)
-                }
-            })
-        }
+        holder.binding.viewmodel = recordModel
 
         holder.binding.parentLayout.setOnClickListener{
-            holder.binding.viewmodel?.itemClick(recordModel.record)
+            recordModel.itemClick(recordModel.record)
+        }
+
+        holder.binding.parentLayout.setOnLongClickListener {
+            recordModel.itemLongClick(recordModel.record)
+            return@setOnLongClickListener true
         }
 
         val animation = when (holder.binding.root.context.resources.configuration.orientation) {

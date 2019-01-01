@@ -4,13 +4,10 @@ import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.databinding.BindingAdapter
 import android.graphics.Color
-import android.graphics.Interpolator
 import android.graphics.drawable.ColorDrawable
-import android.support.constraint.ConstraintLayout
 import android.support.v4.content.ContextCompat
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.Glide

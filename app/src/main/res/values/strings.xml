@@ -11,5 +11,7 @@
     <string name="drawer_close">close</string>
     <string name="empty_text">まだ料理記録はありません</string>
     <string name="get_records">更新ボタンを押すと記録を取得します</string>
+    <string name="open_recipe">レシピページを開きますか？</string>
+    <string name="searchview_hint">コメント検索</string>
 
 </resources>

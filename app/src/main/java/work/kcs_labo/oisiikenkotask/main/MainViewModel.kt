@@ -24,6 +24,8 @@ class MainViewModel(
     val recordModels = MutableLiveData<List<RecyclerRecordModel>>()
     val displayRecord = MutableLiveData<CookingRecord>()
     val emptyTextVisibility = MutableLiveData<Int>()
+    val openRecipeDialogOK = MutableLiveData<Unit>()
+    val openRecipeDialogCancel = MutableLiveData<Unit>()
 
     private val filtering = Filtering()
     private var orgModels: List<RecyclerRecordModel> = listOf()
