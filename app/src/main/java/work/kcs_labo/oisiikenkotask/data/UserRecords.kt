@@ -2,8 +2,8 @@ package work.kcs_labo.oisiikenkotask.data
 
 import org.json.JSONObject
 
-const val PAGINATION = "pagination"
-const val COOKING_RECORDS = "cooking_records"
+private const val PAGINATION = "pagination"
+private const val COOKING_RECORDS = "cooking_records"
 class UserRecords(parentJSON: JSONObject) {
     val pagination = Pagination(parentJSON.getJSONObject(PAGINATION))
     val cookingRecords: List<CookingRecord>

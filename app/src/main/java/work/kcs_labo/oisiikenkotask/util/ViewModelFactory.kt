@@ -1,5 +1,6 @@
 package work.kcs_labo.oisiikenkotask.util
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
@@ -12,12 +13,19 @@ class ViewModelFactory private constructor(
     private val albumRepository: AlbumRepository
 ) : ViewModelProvider.NewInstanceFactory(){
 
+    /**
+     * AlbumRepositoryを注入
+     */
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T =
         when {
             modelClass.isAssignableFrom(MainViewModel::class.java) -> MainViewModel(application, albumRepository)
             else -> throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
         } as T
 
+    /**
+     * 簡単のためInjectionクラスは省略
+     */
     companion object {
         var INSTANCE: ViewModelFactory? = null
         //RemoteDataSourceの注入

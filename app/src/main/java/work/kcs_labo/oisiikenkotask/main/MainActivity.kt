@@ -105,13 +105,16 @@ class MainActivity : AppCompatActivity(), MainNavigator {
         }
     }
 
+    /**
+     * ViewModelFactoryインスタンスを破棄
+     */
     override fun onDestroy() {
         super.onDestroy()
         ViewModelFactory.destroyInstance()
     }
 
     override fun onStartNewActivity() {
-        //今回は不要
+        //今回は1画面のため不要
     }
 
     override fun onOpenImage(record: CookingRecord) {
@@ -142,6 +145,12 @@ class MainActivity : AppCompatActivity(), MainNavigator {
         }
     }
 
+    /**
+     * OpenRecipeDialogFragmentの選択後処理実装
+     * 必ずonCreateでコールする
+     *
+     * @return
+     */
     private fun setupDialogAction(){
         //ダイアログ処理を実装
         binding.viewmodel?.openRecipeDialogOK?.observe(this, Observer {
@@ -154,5 +163,10 @@ class MainActivity : AppCompatActivity(), MainNavigator {
         })
     }
 
+    /**
+     * Repositoryへの参照を注入したMainViewModelを返す
+     *
+     * @return MainViewModel
+     */
     fun obtainViewModel() = obtainViewModel(MainViewModel::class.java)
 }

@@ -52,7 +52,9 @@ class RecyclerRecordAdapter : RecyclerView.Adapter<RecyclerRecordAdapter.Binding
     // you provide access to all the views for a data item in a view holder.
     class BindingHolder(var binding: RecordItemBinding): RecyclerView.ViewHolder(binding.root)
 
-    //差分検知
+    /**
+     * リスト差分検知
+     */
     class Callback(private val old: List<RecyclerRecordModel>,
                    private val aNew: List<RecyclerRecordModel>) : DiffUtil.Callback(){
 

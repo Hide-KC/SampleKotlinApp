@@ -39,12 +39,15 @@ class MainFragment : Fragment() {
             it.setLifecycleOwner(this)
         }
 
+        //UIのアクションはFragmentでセット
         setupRecyclerView()
 
         return binding.root
     }
 
-    //UIのアクションはFragmentでセット
+    /**
+     * NavigationDrawerアクションの初期化
+     */
     private fun setupDrawer(){
         val mainBinding = (activity as MainActivity).binding
 
@@ -73,6 +76,9 @@ class MainFragment : Fragment() {
         }
     }
 
+    /**
+     * Toolbarアクションの初期化
+     */
     private fun setupToolbar() {
         val activity = this.activity as MainActivity
         val toolbar = activity.toolbar
@@ -112,6 +118,9 @@ class MainFragment : Fragment() {
         }
     }
 
+    /**
+     * RecyclerViewの初期化
+     */
     private fun setupRecyclerView(){
         val layoutManager = when (resources.configuration.orientation) {
             Configuration.ORIENTATION_PORTRAIT -> {
@@ -138,8 +147,10 @@ class MainFragment : Fragment() {
         })
 
         binding.recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            /**
+             * 追加読み込み時、スクロール位置を復元する
+             */
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                //更新時のスクロール位置復元
                 super.onScrolled(recyclerView, dx, dy)
 
                 val totalCount = binding.recycler.adapter?.itemCount

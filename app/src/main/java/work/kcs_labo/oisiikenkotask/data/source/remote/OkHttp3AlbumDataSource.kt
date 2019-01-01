@@ -24,6 +24,13 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
     val cache = CookingRecordCache()
     private lateinit var lastPagination: Pagination
 
+    /**
+     * 料理記録リストの取得
+     *
+     * @param offset
+     * @param limit
+     * @param callback
+     */
     override fun getCookingRecords(offset: Int, limit: Int, callback: AlbumDataSource.LoadRecordsCallback) {
         if (!atomicBoolean.get()){
             atomicBoolean.set(true)
@@ -48,6 +55,14 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
         }
     }
 
+    /**
+     * 料理記録の取得
+     *
+     * @param offset
+     * @param limit
+     * @param recordId
+     * @param callback
+     */
     override fun getCookingRecord(offset: Int, limit: Int, recordId: Int, callback: AlbumDataSource.GetRecordCallback) {
         when {
             recordId > limit -> throw IndexOutOfBoundsException("recordIdはゼロ以上limit未満の値にしてください")
@@ -76,6 +91,13 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
         }
     }
 
+    /**
+     * 料理記録の追加取得
+     *
+     * @param offset
+     * @param limit
+     * @param callback
+     */
     override fun getAdditionalRecords(offset: Int, limit: Int, callback: AlbumDataSource.LoadAdditionalRecordCallback) {
         val lastOffset = lastPagination.offset
         val total = lastPagination.total
@@ -122,6 +144,12 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
         atomicBoolean.set(false)
     }
 
+    /**
+     * サーバとの通信処理、料理記録のJSON取得
+     *
+     * @param offset
+     * @param limit
+     */
     private suspend fun getContentDeferred(offset: Int = 0, limit: Int = 10): Deferred<String?> =
         coroutineScope {
             async {
@@ -132,7 +160,7 @@ class OkHttp3AlbumDataSource: AlbumDataSource, CoroutineScope {
                         throw IllegalArgumentException("offsetまたはlimitに負の値は取れません")
                     } else {
                         //Urlにパラメータ追加
-                        buffer.append("?offset=$offset&limit=&limit=$limit")
+                        buffer.append("?offset=$offset&limit=$limit")
                     }
 
                     val request = Request.Builder().url(buffer.toString()).build()
