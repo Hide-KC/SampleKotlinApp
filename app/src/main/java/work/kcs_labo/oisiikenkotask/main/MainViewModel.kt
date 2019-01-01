@@ -11,6 +11,7 @@ import work.kcs_labo.oisiikenkotask.data.source.AlbumDataSource
 import work.kcs_labo.oisiikenkotask.data.source.AlbumRepository
 import work.kcs_labo.oisiikenkotask.list.RecyclerRecordModel
 import work.kcs_labo.oisiikenkotask.util.RecipeTypeEnum
+import work.kcs_labo.oisiikenkotask.SingleLiveEvent
 
 class MainViewModel(
     application: Application,
@@ -24,8 +25,8 @@ class MainViewModel(
     val recordModels = MutableLiveData<List<RecyclerRecordModel>>()
     val displayRecord = MutableLiveData<CookingRecord>()
     val emptyTextVisibility = MutableLiveData<Int>()
-    val openRecipeDialogOK = MutableLiveData<Unit>()
-    val openRecipeDialogCancel = MutableLiveData<Unit>()
+    val openRecipeDialogOK = SingleLiveEvent<Unit>()
+    val openRecipeDialogCancel = SingleLiveEvent<Unit>()
 
     private val filtering = Filtering()
     private var orgModels: List<RecyclerRecordModel> = listOf()

@@ -20,11 +20,11 @@ class OpenRecipeDialogFragment : DialogFragment() {
             setView(view)
             setPositiveButton("開く") { _, _ ->
                 //MainActivity#setupDialogActionで実装
-                mainViewModel.openRecipeDialogOK.value = Unit
+                mainViewModel.openRecipeDialogOK.call()
             }
             setNegativeButton(android.R.string.cancel) {_,_ ->
                 //MainActivity#setupDialogActionで実装
-                mainViewModel.openRecipeDialogCancel.value = Unit
+                mainViewModel.openRecipeDialogCancel.call()
             }
         }
 
