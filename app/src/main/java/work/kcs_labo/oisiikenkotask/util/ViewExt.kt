@@ -16,8 +16,8 @@ import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import work.kcs_labo.oisiikenkotask.R
-import work.kcs_labo.oisiikenkotask.list.RecyclerRecordAdapter
-import work.kcs_labo.oisiikenkotask.list.RecyclerRecordModel
+import work.kcs_labo.oisiikenkotask.list.RecordAdapter
+import work.kcs_labo.oisiikenkotask.list.RecordModel
 import kotlin.math.roundToInt
 
 //拡張関数でImageViewを拡張
@@ -60,11 +60,11 @@ fun ImageView.setVectorSrc(resId: Int){
 }
 
 @BindingAdapter("bind:viewmodels")
-fun RecyclerView.setViewModels(recordModels: List<RecyclerRecordModel>?){
+fun RecyclerView.setViewModels(recordModels: List<RecordModel>?){
     if (recordModels != null){
-        val adapter = this.adapter as RecyclerRecordAdapter
-        val diff = DiffUtil.calculateDiff(RecyclerRecordAdapter.Callback(adapter.recordModels, recordModels), true)
-        adapter.recordModels = recordModels.toList()
+        val adapter = this.adapter as RecordAdapter
+        val diff = DiffUtil.calculateDiff(RecordAdapter.Callback(adapter.recordModels, recordModels), true)
+        adapter.recordModels = recordModels
         diff.dispatchUpdatesTo(adapter)
     }
 }
@@ -84,12 +84,13 @@ fun ViewGroup.setBackgroundColor(colorTo: Int){
         ContextCompat.getColor(context, R.color.all_dish_color)
     }
 
-    val colorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
-    colorAnimation.setTarget(this)
-    colorAnimation.duration = 500
-    colorAnimation.addUpdateListener { animator ->
-        val animatedValue = animator.animatedValue as Int
-        setBackgroundColor(Color.argb(Color.alpha(animatedValue), Color.red(animatedValue), Color.green(animatedValue), Color.blue(animatedValue)))
+    val colorAnimator = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo).also {
+        it.setTarget(this)
+        it.duration = 500
+        it.addUpdateListener { animator ->
+            val animatedValue = animator.animatedValue as Int
+            setBackgroundColor(Color.argb(Color.alpha(animatedValue), Color.red(animatedValue), Color.green(animatedValue), Color.blue(animatedValue)))
+        }
     }
-    colorAnimation.start()
+    colorAnimator.start()
 }

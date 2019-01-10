@@ -9,7 +9,7 @@ import work.kcs_labo.oisiikenkotask.data.CookingRecord
 import work.kcs_labo.oisiikenkotask.data.source.LIMIT
 import work.kcs_labo.oisiikenkotask.data.source.AlbumDataSource
 import work.kcs_labo.oisiikenkotask.data.source.AlbumRepository
-import work.kcs_labo.oisiikenkotask.list.RecyclerRecordModel
+import work.kcs_labo.oisiikenkotask.list.RecordModel
 import work.kcs_labo.oisiikenkotask.util.RecipeTypeEnum
 import work.kcs_labo.oisiikenkotask.SingleLiveEvent
 
@@ -22,14 +22,14 @@ class MainViewModel(
     val headerDrawableId = MutableLiveData<Int>()
     val headerColorTo = MutableLiveData<Int>()
     val selectedRecipeType = MutableLiveData<String>()
-    val recordModels = MutableLiveData<List<RecyclerRecordModel>>()
+    val recordModels = MutableLiveData<List<RecordModel>>()
     val displayRecord = MutableLiveData<CookingRecord>()
     val emptyTextVisibility = MutableLiveData<Int>()
     val openRecipeDialogOK = SingleLiveEvent<Unit>()
     val openRecipeDialogCancel = SingleLiveEvent<Unit>()
 
     private val filtering = Filtering()
-    private var orgModels: List<RecyclerRecordModel> = listOf()
+    private var orgModels: List<RecordModel> = listOf()
     private var navigator: MainNavigator? = null
 
     /**
@@ -47,7 +47,7 @@ class MainViewModel(
      * リストを丸ごと入れ替え
      */
     fun setRecords(records: List<CookingRecord>){
-        val list = mutableListOf<RecyclerRecordModel>()
+        val list = mutableListOf<RecordModel>()
         for (record in records){
             val model = createModel(record)
             list.add(model)
@@ -133,8 +133,8 @@ class MainViewModel(
      *
      * @param record
      */
-    private fun createModel(record: CookingRecord): RecyclerRecordModel =
-        RecyclerRecordModel(record).apply {
+    private fun createModel(record: CookingRecord): RecordModel =
+        RecordModel(record).apply {
             setNavigator(navigator)
         }
 
@@ -143,7 +143,7 @@ class MainViewModel(
      *
      * @param models
      */
-    private fun getFilteredModels(models: List<RecyclerRecordModel>): List<RecyclerRecordModel>{
+    private fun getFilteredModels(models: List<RecordModel>): List<RecordModel>{
         return models
             .filter { model ->
                 if (filtering.recipeTypeEnum == RecipeTypeEnum.ALL_DISH){

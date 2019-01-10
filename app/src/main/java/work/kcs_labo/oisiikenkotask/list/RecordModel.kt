@@ -3,7 +3,7 @@ package work.kcs_labo.oisiikenkotask.list
 import work.kcs_labo.oisiikenkotask.data.CookingRecord
 import work.kcs_labo.oisiikenkotask.main.MainNavigator
 
-class RecyclerRecordModel(val record: CookingRecord) {
+class RecordModel(val record: CookingRecord) {
     private var navigator: MainNavigator? = null
 
     fun itemClick(record: CookingRecord) {

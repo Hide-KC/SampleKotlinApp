@@ -21,7 +21,7 @@ import work.kcs_labo.oisiikenkotask.R
 import work.kcs_labo.oisiikenkotask.data.UserRecords
 import work.kcs_labo.oisiikenkotask.data.source.AlbumDataSource
 import work.kcs_labo.oisiikenkotask.databinding.MainFragBinding
-import work.kcs_labo.oisiikenkotask.list.RecyclerRecordAdapter
+import work.kcs_labo.oisiikenkotask.list.RecordAdapter
 import work.kcs_labo.oisiikenkotask.util.RecipeTypeEnum
 
 class MainFragment : Fragment() {
@@ -132,7 +132,7 @@ class MainFragment : Fragment() {
         }
 
         binding.recycler.layoutManager = layoutManager
-        binding.adapter = RecyclerRecordAdapter()
+        binding.adapter = RecordAdapter()
 
         //xmlでandroid:selectedItemPositionが取得できないためやむなくobserve
         binding.viewmodel?.scrollPosition?.observe(this, Observer {

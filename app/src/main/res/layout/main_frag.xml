@@ -4,7 +4,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:bind="http://schemas.android.com/apk/res-auto">
     <data>
-        <variable name="adapter" type="work.kcs_labo.oisiikenkotask.list.RecyclerRecordAdapter"/>
+        <variable name="adapter" type="work.kcs_labo.oisiikenkotask.list.RecordAdapter"/>
         <variable name="viewmodel" type="work.kcs_labo.oisiikenkotask.main.MainViewModel" />
     </data>
 

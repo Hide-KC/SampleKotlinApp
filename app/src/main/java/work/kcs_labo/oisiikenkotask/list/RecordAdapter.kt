@@ -9,8 +9,8 @@ import android.view.animation.AnimationUtils
 import work.kcs_labo.oisiikenkotask.R
 import work.kcs_labo.oisiikenkotask.databinding.RecordItemBinding
 
-class RecyclerRecordAdapter : RecyclerView.Adapter<RecyclerRecordAdapter.BindingHolder>() {
-    var recordModels: List<RecyclerRecordModel> = listOf()
+class RecordAdapter : RecyclerView.Adapter<RecordAdapter.BindingHolder>() {
+    var recordModels: List<RecordModel> = listOf()
 
     // Viewの生成 (invoked by the layout manager)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BindingHolder {
@@ -55,8 +55,8 @@ class RecyclerRecordAdapter : RecyclerView.Adapter<RecyclerRecordAdapter.Binding
     /**
      * リスト差分検知
      */
-    class Callback(private val old: List<RecyclerRecordModel>,
-                   private val aNew: List<RecyclerRecordModel>) : DiffUtil.Callback(){
+    class Callback(private val old: List<RecordModel>,
+                   private val aNew: List<RecordModel>) : DiffUtil.Callback(){
 
         override fun getOldListSize(): Int = old.size
 
