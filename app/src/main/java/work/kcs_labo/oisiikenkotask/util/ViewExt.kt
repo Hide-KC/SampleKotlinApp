@@ -55,30 +55,33 @@ fun ImageView.setImageAsCircle(url: String?) {
 }
 
 @BindingAdapter("bind:vector_src")
-fun ImageView.setVectorSrc(resId: Int){
+fun ImageView.setVectorSrc(resId: Int) {
     this.setImageResource(resId)
 }
 
-@BindingAdapter("bind:viewmodels")
-fun RecyclerView.setViewModels(recordModels: List<RecordModel>?){
-    if (recordModels != null){
+@BindingAdapter("bind:recordModels")
+fun RecyclerView.setViewModels(recordModels: List<RecordModel>?) {
+    if (recordModels != null) {
         val adapter = this.adapter as RecordAdapter
         val diff = DiffUtil.calculateDiff(RecordAdapter.Callback(adapter.recordModels, recordModels), true)
-        adapter.recordModels = recordModels
+        adapter.recordModels.let {
+            it.clear()
+            it.addAll(recordModels)
+        }
         diff.dispatchUpdatesTo(adapter)
     }
 }
 
 @BindingAdapter("bind:ripple")
-fun ViewGroup.setRippleEffect(recipeType: String){
+fun ViewGroup.setRippleEffect(recipeType: String) {
     val rippleDrawable = RippleDrawableSelector.select(context, recipeType)
     this.background = rippleDrawable
 }
 
 @BindingAdapter("bind:animate_background_color")
-fun ViewGroup.setBackgroundColor(colorTo: Int){
+fun ViewGroup.setBackgroundColor(colorTo: Int) {
     val backgroundDrawable = background
-    val colorFrom = if (backgroundDrawable != null){
+    val colorFrom = if (backgroundDrawable != null) {
         (background as ColorDrawable).color
     } else {
         ContextCompat.getColor(context, R.color.all_dish_color)
@@ -89,7 +92,14 @@ fun ViewGroup.setBackgroundColor(colorTo: Int){
         it.duration = 500
         it.addUpdateListener { animator ->
             val animatedValue = animator.animatedValue as Int
-            setBackgroundColor(Color.argb(Color.alpha(animatedValue), Color.red(animatedValue), Color.green(animatedValue), Color.blue(animatedValue)))
+            setBackgroundColor(
+                Color.argb(
+                    Color.alpha(animatedValue),
+                    Color.red(animatedValue),
+                    Color.green(animatedValue),
+                    Color.blue(animatedValue)
+                )
+            )
         }
     }
     colorAnimator.start()

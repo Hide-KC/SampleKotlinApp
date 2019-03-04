@@ -5,7 +5,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:bind="http://schemas.android.com/apk/res-auto">
     <data>
-        <variable name="viewmodel" type="work.kcs_labo.oisiikenkotask.list.RecordModel" />
+        <variable name="recordModel" type="work.kcs_labo.oisiikenkotask.list.RecordModel" />
     </data>
 
     <android.support.v7.widget.CardView
@@ -17,7 +17,7 @@
 
         <android.support.constraint.ConstraintLayout
                 android:id="@+id/parentLayout"
-                bind:ripple="@{viewmodel.record.recipeType}"
+                bind:ripple="@{recordModel.record.recipeType}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -35,7 +35,7 @@
                     android:id="@+id/image"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    bind:image_as_rect="@{viewmodel.record.imageUrl}"
+                    bind:image_as_rect="@{recordModel.record.imageUrl}"
                     android:src="@drawable/ic_loading_image"
                     android:scaleX="0.25"
                     android:scaleY="0.25"
@@ -53,7 +53,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="@{viewmodel.record.recordedTime}"
+                    android:text="@{recordModel.record.recordedTime}"
                     android:background="@drawable/textview_frame"
                     android:padding="@dimen/textview_padding"
                     app:layout_constraintTop_toBottomOf="@+id/image" app:layout_constraintStart_toStartOf="parent"
@@ -66,7 +66,7 @@
                     android:layout_width="0dp"
                     android:layout_height="64dp"
                     android:layout_marginTop="8dp"
-                    android:text="@{viewmodel.record.comment}"
+                    android:text="@{recordModel.record.comment}"
                     android:maxLines="3"
                     android:ellipsize="end"
                     android:background="@drawable/textview_frame"
